@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\lesroidelareno\Plugin\Block;
+namespace Drupal\wb_horizon_public\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -15,7 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class TitreDeLaPageEncoursBlock extends BlockBase {
-  
+
   /**
    *
    * {@inheritdoc}
@@ -25,7 +25,7 @@ class TitreDeLaPageEncoursBlock extends BlockBase {
       'suffix_title' => ''
     ];
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -38,7 +38,7 @@ class TitreDeLaPageEncoursBlock extends BlockBase {
     ];
     return $form;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -46,7 +46,7 @@ class TitreDeLaPageEncoursBlock extends BlockBase {
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['suffix_title'] = $form_state->getValue('suffix_title');
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -64,5 +64,5 @@ class TitreDeLaPageEncoursBlock extends BlockBase {
     ];
     return $build;
   }
-  
+
 }

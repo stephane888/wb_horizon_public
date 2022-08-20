@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\lesroidelareno\Plugin\views\filter;
+namespace Drupal\wb_horizon_public\Plugin\views\filter;
 
 use Drupal\views\Plugin\views\filter\BooleanOperator;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
@@ -14,7 +14,7 @@ use Drupal\views\ViewExecutable;
  * @ViewsFilter("lesroidelareno_domain_filter")
  */
 class lesroidelarenoDomainFilter extends BooleanOperator {
-  
+
   /**
    * Definit le label;
    *
@@ -25,7 +25,7 @@ class lesroidelarenoDomainFilter extends BooleanOperator {
     parent::init($view, $display, $options);
     $this->value_value = t(' Available on current domain ');
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -34,7 +34,7 @@ class lesroidelarenoDomainFilter extends BooleanOperator {
     $options = parent::operators();
     return $options;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -51,7 +51,7 @@ class lesroidelarenoDomainFilter extends BooleanOperator {
       $this->query->addWhere('OR', $real_field, $current_domain_id, '=');
     }
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -61,5 +61,5 @@ class lesroidelarenoDomainFilter extends BooleanOperator {
     $contexts[] = 'url.site';
     return $contexts;
   }
-  
+
 }
