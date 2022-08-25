@@ -50,7 +50,7 @@ function _wb_horizon_public_image_image_third_party_settings($entity_type, Field
   if (!empty($settings['default_image']['uuid']['fids'])) {
     $fid = reset($settings['default_image']['uuid']['fids']);
     $file = \Drupal\file\Entity\File::load($fid);
-    // dump($file);
+    // dump($file->getMimeType());
     // die();
     // On ajoute l'image par defaut au format : default_image_data; ( Default
     // icon encoded as data URL scheme (RFC 2397). )
@@ -81,7 +81,7 @@ function wb_horizon_public_form_field_config_edit_form_alter(&$form, FormStateIn
      * @var \Drupal\field\Entity\FieldConfig $entity
      */
     $entity = $formObject->getEntity();
-    // dump($entity->getThirdPartySettings('wb_horizon_public'));
+    // dump($entity->toArray());
     $form['#entity_builders'][] = '_wb_horizon_public_image_image_third_party_settings';
   }
 }
@@ -90,11 +90,12 @@ function wb_horizon_public_form_field_config_edit_form_alter(&$form, FormStateIn
  *
  * @param Drupal\Core\Entity\EntityInterface $entity
  */
-function wb_horizon_public_field_config_update(Drupal\field\Entity\FieldConfig $entity) {
+function wb_horizon_public_field_config_insert(Drupal\field\Entity\FieldConfig $entity) {
   //
   if ($entity->get('field_type') == 'image') {
-    \Drupal::messenger()->addStatus(' Maj du champs de type : IMAGE ');
+
     $entityConf = $entity->toArray();
+
     /**
      * Recuperer l'image qui est definit dans
      * third_party_settings.wb_horizon_public.default_image_data et le definit
@@ -108,22 +109,29 @@ function wb_horizon_public_field_config_update(Drupal\field\Entity\FieldConfig $
       $entityRepository = \Drupal::service('entity.repository');
       $file = $entityRepository->loadEntityByUuid('file', $entityConf['settings']['default_image']['uuid']);
       if (empty($file) && !empty($entityConf['third_party_settings']['wb_horizon_public']['default_image_data'])) {
+        \Drupal::messenger()->addStatus(' Maj du champs de type : IMAGE ...');
         $icon_data = fopen($entityConf['third_party_settings']['wb_horizon_public']['default_image_data'], 'r');
         //
         // Compose the default icon file destination.
         $icon_meta = stream_get_meta_data($icon_data);
+
         // File extension from MIME, only JPG/JPEG, PNG and SVG expected.
         [
+          $l,
           $icon_file_ext
         ] = explode('image/', $icon_meta['mediatype']);
         // SVG special case.
         if ($icon_file_ext == 'svg+xml') {
           $icon_file_ext = 'svg';
         }
+        if (empty($icon_file_ext))
+          $icon_file_ext = 'png';
 
         $filesystem = \Drupal::service('file_system');
         $icon_upload_path = 'public://paragraphs_type_icon_import/';
-        $icon_file_destination = $icon_upload_path . $entity->id() . '-default-icon.' . $icon_file_ext;
+        $id = $entity->get('entity_type') . '_' . $entity->get('field_name') . rand(0, 999);
+        $icon_file_destination = $icon_upload_path . $id . '.' . $icon_file_ext;
+
         $filesystem->prepareDirectory($icon_upload_path, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
         // Save the default icon file.
         $icon_file_uri = $filesystem->saveData($icon_data, $icon_file_destination);
@@ -138,10 +146,10 @@ function wb_horizon_public_field_config_update(Drupal\field\Entity\FieldConfig $
         $new_icon->save();
         // file usage
         if ($new_icon->id()) {
-          /** @var \Drupal\file\FileUsage\FileUsageInterface $file_usage */
+          /** @var \Drupal\file\FileUsage\DatabaseFileUsageBackend $file_usage */
           $file_usage = \Drupal::service('file.usage');
           // Add usage of the new icon file.
-          $file_usage->add($new_icon, 'paragraphs', 'paragraphs_type', $entity->id());
+          $file_usage->add($new_icon, 'paragraphs', 'paragraphs_type', $id);
         }
       }
     }
