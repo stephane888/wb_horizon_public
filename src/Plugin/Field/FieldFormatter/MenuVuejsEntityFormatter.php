@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\vuejs_entity\Plugin\Field\FieldFormatter;
+namespace Drupal\wb_horizon_public\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
 use Drupal\menu_item_extras\Entity\MenuItemExtrasMenuLinkContent;
@@ -32,14 +32,14 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
    * @var \Drupal\Core\Menu\MenuLinkTreeInterface
    */
   protected $menuTree;
-  
+
   /**
    * The active menu trail service.
    *
    * @var \Drupal\Core\Menu\MenuActiveTrailInterface
    */
   protected $menuActiveTrail;
-  
+
   /**
    *
    * {@inheritdoc}
@@ -47,7 +47,7 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
   public static function defaultSettings() {
     return [] + parent::defaultSettings();
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -58,17 +58,17 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
     $instance->menuActiveTrail = $container->get('menu.active_trail');
     return $instance;
   }
-  
+
   /**
    *
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $elements = [];
-    
+
     return $elements;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -101,10 +101,10 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
       }
       // $elements[$delta]['#cache']['tags'] = $entity->getCacheTags();
     }
-    
+
     return $elements;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -112,5 +112,5 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
   protected function checkAccess(EntityInterface $entity) {
     return $entity->access('view label', NULL, TRUE);
   }
-  
+
 }
