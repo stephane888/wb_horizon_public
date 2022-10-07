@@ -35,7 +35,7 @@ class WbHorizonPublic {
           ]
         ]
       ];
-      $link = $renderer->renderRoot($link);
+      // $link = $renderer->renderRoot($link);
     }
     return $link;
   }
