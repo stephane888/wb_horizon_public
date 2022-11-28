@@ -230,6 +230,11 @@ function wb_horizon_public_field_config_insert(Drupal\field\Entity\FieldConfig $
   }
 }
 
+/**
+ *
+ * @param array $fields
+ * @param array $context
+ */
 function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields, array $context) {
   if ($context['entity_type'] == 'paragraph') {
     $fields['callback_layout_edit'] = [

@@ -32,14 +32,14 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
    * @var \Drupal\Core\Menu\MenuLinkTreeInterface
    */
   protected $menuTree;
-
+  
   /**
    * The active menu trail service.
    *
    * @var \Drupal\Core\Menu\MenuActiveTrailInterface
    */
   protected $menuActiveTrail;
-
+  
   /**
    *
    * {@inheritdoc}
@@ -47,7 +47,7 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
   public static function defaultSettings() {
     return [] + parent::defaultSettings();
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -58,17 +58,17 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
     $instance->menuActiveTrail = $container->get('menu.active_trail');
     return $instance;
   }
-
+  
   /**
    *
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $elements = [];
-
+    
     return $elements;
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -85,26 +85,29 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
       }
       else {
         $menu_name = $entity->id();
+        
         $parameters = $this->menuTree->getCurrentRouteMenuTreeParameters($menu_name);
         $parameters->setMinDepth(0);
         $tree = $this->menuTree->load($menu_name, $parameters);
-        $manipulators = array(
-          array(
-            'callable' => 'menu.default_tree_manipulators:checkAccess'
-          ),
-          array(
-            'callable' => 'menu.default_tree_manipulators:generateIndexAndSort'
-          )
-        );
-        $tree = $this->menuTree->transform($tree, $manipulators);
-        $elements[$delta] = $this->menuTree->build($tree);
+        if (!empty($tree)) {
+          $manipulators = array(
+            array(
+              'callable' => 'menu.default_tree_manipulators:checkAccess'
+            ),
+            array(
+              'callable' => 'menu.default_tree_manipulators:generateIndexAndSort'
+            )
+          );
+          $tree = $this->menuTree->transform($tree, $manipulators);
+          $elements[$delta] = $this->menuTree->build($tree);
+        }
       }
       // $elements[$delta]['#cache']['tags'] = $entity->getCacheTags();
     }
-
+    
     return $elements;
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -112,5 +115,5 @@ class MenuVuejsEntityFormatter extends EntityReferenceFormatterBase {
   protected function checkAccess(EntityInterface $entity) {
     return $entity->access('view label', NULL, TRUE);
   }
-
+  
 }
