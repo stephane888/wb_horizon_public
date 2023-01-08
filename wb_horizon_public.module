@@ -239,7 +239,7 @@ function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields,
   if ($context['entity_type'] == 'paragraph') {
     $fields['callback_layout_edit'] = [
       'type' => 'callback',
-      'label' => t('CustomField'),
+      'label' => t('Edit config'),
       'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::getRouteToedit',
       'weight' => 10
     ];
