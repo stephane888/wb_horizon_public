@@ -262,6 +262,45 @@ function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields,
   }
 }
 
+function wb_horizon_public_form_commerce_product_menu_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  /**
+   *
+   * @var \Drupal\commerce_product\Entity\Product $Product
+   */
+  $Product = $form_state->getFormObject()->getEntity();
+  if (!$Product->isNew()) {
+    $form['actions']['duplicate'] = [
+      '#type' => 'submit',
+      '#value' => 'Dupliquer le produit et ses variations',
+      '#button_type' => 'secondary',
+      '#submit' => [
+        '_wb_horizon_public_entityDuplicate'
+      ],
+      '#weight' => 20
+    ];
+  }
+}
+
+function _wb_horizon_public_entityDuplicate(array $form, FormStateInterface $form_state) {
+  /**
+   *
+   * @var \Drupal\commerce_product\Entity\Product $Product
+   */
+  $Product = $form_state->getFormObject()->getEntity();
+  $ProductClone = $Product->createDuplicate();
+  
+  /**
+   *
+   * @var \Drupal\vuejs_entity\Services\DuplicateEntityReference $DuplicateEntityReference
+   */
+  $DuplicateEntityReference = \Drupal::service('vuejs_entity.duplicate.entity');
+  $datas = [];
+  $DuplicateEntityReference->duplicateProduct($Product, $ProductClone, true, \Drupal::currentUser()->id(), $datas);
+  \Drupal::request()->query->remove('destination');
+  $form_state->setRedirect("entity.commerce_product.edit_form", [
+    'commerce_product' => $ProductClone->id()
+  ]);
+}
 
 
 
