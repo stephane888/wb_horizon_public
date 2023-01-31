@@ -1,0 +1,10 @@
+field.widget.settings.creneau_widget_type:
+  type: mapping
+  label: 'Creneau widget type widget settings'
+  mapping:
+    size:
+      type: integer
+      label: 'Size'
+    placeholder:
+      type: textfield
+      label: 'Placeholder'
