@@ -52,8 +52,8 @@ class CreneauWidgetType extends WidgetBase {
       '#step' => 10
     ];
     $elements['decalage_creneau'] = [
-      '#type' => 'textfield',
-      '#title' => t('Placeholder'),
+      '#type' => 'number',
+      '#title' => t(' Decalage creneau '),
       '#default_value' => $this->getSetting('decalage_creneau'),
       '#required' => TRUE,
       '#min' => 10,
