@@ -98,7 +98,6 @@ function wb_horizon_public_views_data_alter(array &$data) {
    * la requete est cree par 'id'
    */
   if (!empty($data['commerce_product__field_domain_access'])) {
-    
     $data['commerce_product__field_domain_access']['product_field_domain_access'] = [
       'title' => t('Current domain'),
       'group' => t('Domain'),
@@ -116,8 +115,8 @@ function wb_horizon_public_views_data_alter(array &$data) {
    */
   if (!empty($data['search_api_index_produits']['field_domain_access'])) {
     $data['search_api_index_produits']['product_field_domain_access'] = [
-      'title' => t('Current domain'),
-      'group' => t('Domain'),
+      'title' => t(' Current domain '),
+      'group' => t(' Domain '),
       'filter' => [
         'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD,
         'id' => 'lesroidelareno_domain_filter',
@@ -262,7 +261,13 @@ function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields,
   }
 }
 
-function wb_horizon_public_form_commerce_product_menu_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+/**
+ *
+ * @param array $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @param int $form_id
+ */
+function wb_horizon_public_form_commerce_product_menu_edit_form_alter(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   /**
    *
    * @var \Drupal\commerce_product\Entity\Product $Product
@@ -281,6 +286,11 @@ function wb_horizon_public_form_commerce_product_menu_edit_form_alter(&$form, \D
   }
 }
 
+/**
+ *
+ * @param array $form
+ * @param FormStateInterface $form_state
+ */
 function _wb_horizon_public_entityDuplicate(array $form, FormStateInterface $form_state) {
   /**
    *
