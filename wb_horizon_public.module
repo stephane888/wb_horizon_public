@@ -252,10 +252,64 @@ function wb_horizon_public_field_config_insert(Drupal\field\Entity\FieldConfig $
  */
 function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields, array $context) {
   if ($context['entity_type'] == 'paragraph') {
+    $fields['id'] = [
+      'type' => 'field',
+      'label' => t('ID'),
+      'weight' => 0
+    ];
     $fields['callback_layout_edit'] = [
       'type' => 'callback',
       'label' => t('Edit config'),
       'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::getRouteToedit',
+      'weight' => 10
+    ];
+  }
+  elseif ($context['entity_type'] == 'blocks_contents') {
+    $fields['id'] = [
+      'type' => 'field',
+      'label' => t('ID'),
+      'weight' => 0
+    ];
+    $fields['type'] = [
+      'type' => 'field',
+      'label' => 'Type',
+      'weight' => 0
+    ];
+    $fields['callback_layout_url'] = [
+      'type' => 'callback',
+      'label' => t('Edition externe'),
+      'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::manageBlocksContents',
+      'weight' => 10
+    ];
+  }
+  elseif ($context['entity_type'] == 'commerce_product') {
+    $fields['product_id'] = [
+      'type' => 'field',
+      'label' => t('ID'),
+      'weight' => 0
+    ];
+    $fields['callback_layout_url'] = [
+      'type' => 'callback',
+      'label' => t('Variations du produit'),
+      'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::getRouteVariations',
+      'weight' => 10
+    ];
+  }
+  elseif ($context['entity_type'] == 'node') {
+    $fields['nid'] = [
+      'type' => 'field',
+      'label' => t('ID'),
+      'weight' => 0
+    ];
+    $fields['type'] = [
+      'type' => 'field',
+      'label' => 'Type',
+      'weight' => 0
+    ];
+    $fields['callback_layout_url'] = [
+      'type' => 'callback',
+      'label' => t('edition externe'),
+      'callback' => '\Drupal\lesroidelareno\lesroidelareno::manageNode',
       'weight' => 10
     ];
   }
