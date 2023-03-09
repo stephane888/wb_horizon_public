@@ -2,6 +2,7 @@
     "name": "stephane888/wb_horizon_public",
     "type": "drupal-module-custom",
     "license": "MIT",
+    "description": "module wb_horizon_public",
     "authors": [
         {
             "name": "kouwa stephane",
