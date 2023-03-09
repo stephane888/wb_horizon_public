@@ -97,7 +97,14 @@ class WbHorizonPublic {
      */
     $renderer = \Drupal::service('renderer');
     if (!empty($Product->id())) {
-      $nbre = count($Product->getVariationIds());
+      $variations = $Product->getVariationIds();
+      $nbre = 0;
+      if (!empty($variations)) {
+        // On verifie si les variations existent reelement ( suite à des bugs,
+        // on pouvait avoir une variation qui appartenait à deux produit).
+        $product_variations = \Drupal::entityTypeManager()->getStorage('commerce_product_variation')->loadMultiple($variations);
+        $nbre = count($product_variations);
+      }
       $error = false;
       if ($nbre)
         $nbre = 'Editer ( ' . $nbre . ' variations )';
