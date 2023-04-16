@@ -159,6 +159,102 @@ function wb_horizon_public_views_data_alter(array &$data) {
   }
   
   /**
+   * On ajoute le filtre pour cv_entity.
+   */
+  if (!empty($data['cv_entity__field_domain_access'])) {
+    $data['cv_entity__field_domain_access']['field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
+  
+  /**
+   * On ajoute le filtre pour commerce_order.
+   */
+  if (!empty($data['commerce_order__field_domain_access'])) {
+    $data['commerce_order__field_domain_access']['field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
+  
+  /**
+   * On ajoute le filtre pour commerce_payment.
+   */
+  if (!empty($data['commerce_payment__field_domain_access'])) {
+    $data['commerce_payment__field_domain_access']['field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
+  
+  /**
+   * On ajoute le filtre pour commerce_payment_method.
+   */
+  if (!empty($data['commerce_payment_method__field_domain_access'])) {
+    $data['commerce_payment_method__field_domain_access']['field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
+  
+  /**
+   * On ajoute le filtre pour commerce_promotion_coupon.
+   */
+  if (!empty($data['commerce_promotion_coupon__field_domain_access'])) {
+    $data['commerce_promotion_coupon__field_domain_access']['field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
+  // commerce_promotion
+  /**
+   * On ajoute le filtre pour commerce_promotion.
+   */
+  if (!empty($data['commerce_promotion__field_domain_access'])) {
+    $data['commerce_promotion__field_domain_access']['field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
+  
+  /**
    * On ajoute le filtre pour filtrer les differents modeles de themes.
    */
   if ($data['site_type_datas__terms']) {
