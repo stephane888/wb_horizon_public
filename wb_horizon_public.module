@@ -405,7 +405,7 @@ function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields,
     $fields['callback_layout_url'] = [
       'type' => 'callback',
       'label' => t('edition externe'),
-      'callback' => '\Drupal\lesroidelareno\lesroidelareno::manageNode',
+      'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::manageNode',
       'weight' => 10
     ];
   }
