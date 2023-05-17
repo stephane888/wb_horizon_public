@@ -15,17 +15,18 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class TitreDeLaPageEncoursBlock extends BlockBase {
-
+  
   /**
    *
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
     return [
-      'suffix_title' => ''
+      'suffix_title' => '',
+      'tag' => 'h1'
     ];
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -36,17 +37,23 @@ class TitreDeLaPageEncoursBlock extends BlockBase {
       '#title' => $this->t('suffix title'),
       '#default_value' => $this->configuration['suffix_title']
     ];
+    $form['tag'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('tag to use'),
+      '#default_value' => $this->configuration['tag']
+    ];
     return $form;
   }
-
+  
   /**
    *
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['suffix_title'] = $form_state->getValue('suffix_title');
+    $this->configuration['tag'] = $form_state->getValue('tag');
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -57,12 +64,37 @@ class TitreDeLaPageEncoursBlock extends BlockBase {
     $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
     if (!empty($this->configuration['suffix_title']))
       $title = $title . ' ' . $this->configuration['suffix_title'];
-    $build['title'] = [
-      '#type' => 'html_tag',
-      '#tag' => 'h1',
-      '#value' => $title
-    ];
+    if (!empty($this->configuration['tag'])) {
+      $build['title'] = [
+        '#type' => 'html_tag',
+        '#tag' => $this->configuration['tag'],
+        '#value' => $title
+      ];
+    }
+    else
+      $build = $this->viewValue($title);
+    
     return $build;
   }
-
+  
+  /**
+   * Generate the output appropriate for one field item.
+   *
+   * @param \Drupal\Core\Field\FieldItemInterface $item
+   *        One field item.
+   *        
+   * @return array The textual output generated as a render array.
+   */
+  protected function viewValue($value) {
+    // The text value has no text format assigned to it, so the user input
+    // should equal the output, including newlines.
+    return [
+      '#type' => 'inline_template',
+      '#template' => '{{ value|raw }}',
+      '#context' => [
+        'value' => $value
+      ]
+    ];
+  }
+  
 }
