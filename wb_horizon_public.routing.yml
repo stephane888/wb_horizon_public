@@ -5,3 +5,13 @@ entity.paragraph.canonical:
     _title: 'paragraph view canonical'
   requirements:
     _role: 'administrator'
+
+wb_horizon_public.default_config_bydomain:
+  path: '/config/wb-horizon-public/defaultconfigbydomain'
+  defaults:
+    _form: '\Drupal\wb_horizon_public\Form\DefaultConfigBydomain'
+    _title: 'Default config by domain'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

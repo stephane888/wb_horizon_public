@@ -7,6 +7,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\file\Entity\File;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\domain_access\DomainAccessManagerInterface;
+use Stephane888\Debug\Repositories\ConfigDrupal;
 
 /**
  *
@@ -17,6 +18,42 @@ use Drupal\domain_access\DomainAccessManagerInterface;
  * This file is no longer required in Drupal 8.
  * @see https://www.drupal.org/node/2217931
  */
+/**
+ *
+ * @param array $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @param int $form_id
+ */
+function wb_horizon_public_form_commerce_order_item_add_to_cart_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $configs = ConfigDrupal::config('wb_horizon_public.defaultconfigbydomain');
+  /**
+   * On surcharge le texte add to cart.
+   */
+  if (!empty($configs['commerce']['texte_add_to_cart'])) {
+    // 1 par defaut
+    if (!empty($form['actions']['submit']['#value'])) {
+      $form['actions']['submit']['#value'] = t($configs['commerce']['texte_add_to_cart']);
+    }
+    // 2 apres surcharge du bouton
+    if (!empty($form['actions']['custom_submit'][1]['#value'])) {
+      $form['actions']['custom_submi'][1]['#value'] = t($configs['commerce']['texte_add_to_cart']);
+    }
+    // 3 apres surcharge du bouton et quantité
+    if (!empty($form['contain-qty-add'][1][0]['custom_submit'][1]['#value'])) {
+      $form['contain-qty-add'][1][0]['custom_submit'][1]['#value'] = t($configs['commerce']['texte_add_to_cart']);
+    }
+  }
+}
+
+/**
+ * implement hook_field_widget_form_alter
+ * Permet d'alterer les champs.
+ */
+function wb_horizon_public_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
+  // alter la valeur du champs "add to cart"
+  // commerce_product_variation_attributes
+  // dump($element);
+}
 
 /**
  * Attention on a deux sauvegarde, avec des struture de données differente.

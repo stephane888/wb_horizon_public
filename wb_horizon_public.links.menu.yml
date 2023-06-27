@@ -1,0 +1,6 @@
+wb_horizon_public.default_config_bydomain:
+  title: 'Default config by domain'
+  route_name: wb_horizon_public.default_config_bydomain
+  description: 'A description for the menu entry'
+  parent: system.admin_config_system
+  weight: 99
