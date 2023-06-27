@@ -66,6 +66,20 @@ class DefaultConfigBydomain extends ConfigFormBase {
       '#size' => 64,
       '#default_value' => !empty($configs['commerce']['texte_add_to_cart']) ? $configs['commerce']['texte_add_to_cart'] : 'Add to cart'
     ];
+    $form['commerce']['checkout_button_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Texte &#039;add to cart&#039;'),
+      '#maxlength' => 250,
+      '#size' => 64,
+      '#default_value' => !empty($configs['commerce']['checkout_button_text']) ? $configs['commerce']['checkout_button_text'] : 'To order'
+    ];
+    $form['commerce']['cart_button_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Texte &#039;add to cart&#039;'),
+      '#maxlength' => 250,
+      '#size' => 64,
+      '#default_value' => !empty($configs['commerce']['cart_button_text']) ? $configs['commerce']['cart_button_text'] : 'See cart'
+    ];
     return parent::buildForm($form, $form_state);
   }
   

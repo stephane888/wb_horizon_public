@@ -1,3 +1,5 @@
 wb_horizon_public:
   commerce:
     texte_add_to_cart: "Add to cart"
+    checkout_button_text: "To order"
+    cart_button_text: "See cart"
