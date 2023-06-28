@@ -46,13 +46,20 @@ function wb_horizon_public_form_commerce_order_item_add_to_cart_form_alter(&$for
 }
 
 /**
- * implement hook_field_widget_form_alter
+ * implement hook_form_alter
  * Permet d'alterer les champs.
  */
-function wb_horizon_public_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
-  // alter la valeur du champs "add to cart"
-  // commerce_product_variation_attributes
-  // dump($element);
+function wb_horizon_public_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
+  // alter la valeur les valeurs du panier.
+  if (!empty($form['#form_id']) && str_contains($form['#form_id'], 'commerce_cart_form')) {
+    $configs = ConfigDrupal::config('wb_horizon_public.defaultconfigbydomain');
+    if (!empty($form['actions']['container'][1])) {
+      $form['actions']['container'][1]['#value'] = t($configs['commerce']['checkout_button_text']);
+      if (!empty($form['actions']['container'][1]['#html_value'][0])) {
+        $form['actions']['container'][1]['#html_value'][0]['#value'] = t($configs['commerce']['checkout_button_text']);
+      }
+    }
+  }
 }
 
 /**

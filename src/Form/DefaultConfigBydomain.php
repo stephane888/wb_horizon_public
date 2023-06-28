@@ -68,14 +68,14 @@ class DefaultConfigBydomain extends ConfigFormBase {
     ];
     $form['commerce']['checkout_button_text'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Texte &#039;add to cart&#039;'),
+      '#title' => $this->t('Texte "Passer la commande"'),
       '#maxlength' => 250,
       '#size' => 64,
       '#default_value' => !empty($configs['commerce']['checkout_button_text']) ? $configs['commerce']['checkout_button_text'] : 'To order'
     ];
     $form['commerce']['cart_button_text'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Texte &#039;add to cart&#039;'),
+      '#title' => $this->t('Texte "Voir le panier"'),
       '#maxlength' => 250,
       '#size' => 64,
       '#default_value' => !empty($configs['commerce']['cart_button_text']) ? $configs['commerce']['cart_button_text'] : 'See cart'
