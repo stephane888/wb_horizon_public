@@ -36,7 +36,7 @@ function wb_horizon_public_form_commerce_order_item_add_to_cart_form_alter(&$for
     }
     // 2 apres surcharge du bouton
     if (!empty($form['actions']['custom_submit'][1]['#value'])) {
-      $form['actions']['custom_submi'][1]['#value'] = t($configs['commerce']['texte_add_to_cart']);
+      $form['actions']['custom_submit'][1]['#value'] = t($configs['commerce']['texte_add_to_cart']);
     }
     // 3 apres surcharge du bouton et quantité
     if (!empty($form['contain-qty-add'][1][0]['custom_submit'][1]['#value'])) {
