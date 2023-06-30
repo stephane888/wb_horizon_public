@@ -2,39 +2,19 @@
 
 namespace Drupal\wb_horizon_public\Plugin\views\filter;
 
-use Drupal\views\Plugin\views\filter\BooleanOperator;
-use Drupal\views\Plugin\views\display\DisplayPluginBase;
-use Drupal\views\ViewExecutable;
+use Drupal\domain_access\Plugin\views\filter\DomainAccessCurrentAllFilter;
 
 /**
- * Handles matching of current domain.
+ * Permet de filtrer les entities en function du domaine encours.
+ * Elle etant la methode de definie par DomainAccessCurrentAllFilter et modifier
+ * la function de filtrer afin d'avoir un filtre complet.
  *
  * @ingroup views_filter_handlers
  *
  * @ViewsFilter("lesroidelareno_domain_filter")
  */
-class lesroidelarenoDomainFilter extends BooleanOperator {
-
-  /**
-   * Definit le label;
-   *
-   * {@inheritdoc}
-   *
-   */
-  public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
-    parent::init($view, $display, $options);
-    $this->value_value = t(' Available on current domain ');
-  }
-
-  /**
-   *
-   * {@inheritdoc}
-   */
-  protected function operators() {
-    $options = parent::operators();
-    return $options;
-  }
-
+class lesroidelarenoDomainFilter extends DomainAccessCurrentAllFilter {
+  
   /**
    *
    * {@inheritdoc}
@@ -51,15 +31,5 @@ class lesroidelarenoDomainFilter extends BooleanOperator {
       $this->query->addWhere('OR', $real_field, $current_domain_id, '=');
     }
   }
-
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function getCacheContexts() {
-    $contexts = parent::getCacheContexts();
-    $contexts[] = 'url.site';
-    return $contexts;
-  }
-
+  
 }

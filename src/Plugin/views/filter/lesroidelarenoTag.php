@@ -10,33 +10,33 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\Checkboxes;
 
 /**
- * Handles matching of current domain.
+ * Filtre statique qui permet de filtrer les types de site web.
  *
  * @ingroup views_filter_handlers
  *
  * @ViewsFilter("lesroidelareno_tag_filter")
  */
 class lesroidelarenoTag extends InOperator {
-
+  
   /**
    *
    * @var array Stores all operations which are available on the form.
    */
   protected $valueOptions = NULL;
-
+  
   /**
    * Liste d'option pour le second champs.
    *
    * @var array
    */
   protected $secondOptions = [];
-
+  
   /**
    *
    * @var string
    */
   protected $value2 = null;
-
+  
   /**
    * Definit le label;
    *
@@ -47,25 +47,25 @@ class lesroidelarenoTag extends InOperator {
     parent::init($view, $display, $options);
     //
   }
-
+  
   public function defaultExposeOptions() {
     parent::defaultExposeOptions();
     // $this->options['expose']['reduce'] = FALSE;
   }
-
+  
   protected function defineOptions() {
     $options = parent::defineOptions();
-
+    
     $options['operator']['default'] = 'in';
     $options['value']['default'] = [];
     $options['expose']['contains']['reduce'] = [
       'default' => FALSE
     ];
     // put select vocabulary hier.
-
+    
     return $options;
   }
-
+  
   /**
    * This kind of construct makes it relatively easy for a child class
    * to add or remove functionality by overriding this function and
@@ -108,7 +108,7 @@ class lesroidelarenoTag extends InOperator {
     //
     return $operators;
   }
-
+  
   /**
    * Build strings from the operators() for 'select' options.
    */
@@ -117,10 +117,10 @@ class lesroidelarenoTag extends InOperator {
     foreach ($this->operators() as $id => $info) {
       $options[$id] = $info[$which];
     }
-
+    
     return $options;
   }
-
+  
   protected function operatorValues($values = 1) {
     $options = [];
     foreach ($this->operators() as $id => $info) {
@@ -128,10 +128,10 @@ class lesroidelarenoTag extends InOperator {
         $options[] = $id;
       }
     }
-
+    
     return $options;
   }
-
+  
   private function getTerms($target_id = 0, $vid = "typesite") {
     $database = \Drupal::database();
     $query = $database->select('taxonomy_term_field_data', 't');
@@ -143,7 +143,7 @@ class lesroidelarenoTag extends InOperator {
     $query->addField('t', 'name');
     return $query->execute()->fetchAll(\PDO::FETCH_ASSOC);
   }
-
+  
   /**
    * Child classes should be used to override this function and set the
    * 'value options', unless 'options callback' is defined as a valid function
@@ -182,14 +182,14 @@ class lesroidelarenoTag extends InOperator {
     // $this->valueOptions = $result;
     //
     $this->valueOptions = $ids;
-
+    
     return $this->valueOptions;
   }
-
+  
   protected function valueForm(&$form, FormStateInterface $form_state) {
     $form['value'] = [];
     $options = [];
-
+    
     $exposed = $form_state->get('exposed');
     if (!$exposed) {
       // Add a select all option to the value form.
@@ -197,18 +197,18 @@ class lesroidelarenoTag extends InOperator {
         'all' => $this->t('Select all')
       ];
     }
-
+    
     $this->getValueOptions();
     $options += $this->valueOptions;
     $default_value = (array) $this->value;
-
+    
     $which = 'all';
     if (!empty($form['operator'])) {
       $source = ':input[name="options[operator]"]';
     }
     if ($exposed) {
       $identifier = $this->options['expose']['identifier'];
-
+      
       if (empty($this->options['expose']['use_operator']) || empty($this->options['expose']['operator_id'])) {
         // exposed and locked.
         $which = in_array($this->operator, $this->operatorValues(1)) ? 'value' : 'none';
@@ -216,15 +216,15 @@ class lesroidelarenoTag extends InOperator {
       else {
         $source = ':input[name="' . $this->options['expose']['operator_id'] . '"]';
       }
-
+      
       if (!empty($this->options['expose']['reduce'])) {
         $options = $this->reduceValueOptions();
-
+        
         if (!empty($this->options['expose']['multiple']) && empty($this->options['expose']['required'])) {
           $default_value = [];
         }
       }
-
+      
       if (empty($this->options['expose']['multiple'])) {
         if (empty($this->options['expose']['required']) && (empty($default_value) || !empty($this->options['expose']['reduce'])) || isset($this->options['value']['all'])) {
           $default_value = 'All';
@@ -239,7 +239,7 @@ class lesroidelarenoTag extends InOperator {
         }
       }
     }
-
+    
     if ($which == 'all' || $which == 'value') {
       $form['value'] = [
         '#type' => $this->valueFormType,
@@ -257,7 +257,7 @@ class lesroidelarenoTag extends InOperator {
         $user_input[$identifier] = $default_value;
         $form_state->setUserInput($user_input);
       }
-
+      
       if ($which == 'all') {
         if (!$exposed && (in_array($this->valueFormType, [
           'checkbox',
@@ -295,7 +295,7 @@ class lesroidelarenoTag extends InOperator {
     else {
       $this->secondOptions = [];
     }
-
+    
     $form['sous_menu'] = [
       '#type' => 'select',
       '#title' => 'Selectionner une sous categorie',
@@ -304,7 +304,7 @@ class lesroidelarenoTag extends InOperator {
       '#access' => empty($this->secondOptions) ? false : true
     ];
   }
-
+  
   protected function opSimple() {
     if (empty($this->value)) {
       return;
@@ -329,7 +329,7 @@ class lesroidelarenoTag extends InOperator {
     // array addition problems.
     $this->query->addWhere($this->options['group'], "$this->tableAlias.$this->realField", array_values($terms), $this->operator);
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -339,13 +339,13 @@ class lesroidelarenoTag extends InOperator {
     $contexts[] = 'url.site';
     return $contexts;
   }
-
+  
   /**
    * Determines if the input from a filter should change the generated query.
    *
    * @param array $input
    *        The exposed data for this view.
-   *
+   *        
    * @return bool TRUE if the input for this filter should be included in the
    *         view query.
    *         FALSE otherwise.
@@ -360,7 +360,7 @@ class lesroidelarenoTag extends InOperator {
     if (!empty($this->options['expose']['use_operator']) && !empty($this->options['expose']['operator_id']) && isset($input[$this->options['expose']['operator_id']])) {
       $this->operator = $input[$this->options['expose']['operator_id']];
     }
-
+    
     if (!empty($this->options['expose']['identifier'])) {
       if ($this->options['is_grouped']) {
         $value = $input[$this->options['group_info']['identifier']];
@@ -368,25 +368,25 @@ class lesroidelarenoTag extends InOperator {
       else {
         $value = $input[$this->options['expose']['identifier']];
       }
-
+      
       // Various ways to check for the absence of non-required input.
       if (empty($this->options['expose']['required'])) {
         if (($this->operator == 'empty' || $this->operator == 'not empty') && $value === '') {
           $value = ' ';
         }
-
+        
         if ($this->operator != 'empty' && $this->operator != 'not empty') {
           if ($value == 'All' || $value === []) {
             return FALSE;
           }
-
+          
           // If checkboxes are used to render this filter, do not include the
           // filter if no options are checked.
           if (is_array($value) && Checkboxes::detectEmptyCheckboxes($value)) {
             return FALSE;
           }
         }
-
+        
         if (!empty($this->alwaysMultiple) && $value === '') {
           return FALSE;
         }
@@ -403,8 +403,8 @@ class lesroidelarenoTag extends InOperator {
         return FALSE;
       }
     }
-
+    
     return TRUE;
   }
-
+  
 }
