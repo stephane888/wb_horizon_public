@@ -199,7 +199,6 @@ function wb_horizon_public_views_data_alter(array &$data) {
           ];
           $mf['filter']['id'] = 'wb_horizon_public_term_filter';
           $data[$table_name]['wb_horizon_public_' . $data[$table_name][$field_name]['filter']['field']] = $mf;
-          \Stephane888\Debug\debugLog::kintDebugDrupal($data[$table_name], $table_name . '--' . $field_name, true);
         }
       }
     }
