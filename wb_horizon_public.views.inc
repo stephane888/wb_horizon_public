@@ -168,6 +168,23 @@ function wb_horizon_public_views_data_alter(array &$data) {
     ];
   }
   
+  // booking_reservation
+  /**
+   * On ajoute le filtre pour booking_reservation.
+   */
+  if (!empty($data['booking_reservation__field_domain_access'])) {
+    $data['booking_reservation__field_domain_access']['field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
+  
   /**
    * On ajoute le filtre pour filtrer les differents modeles de themes.
    */
