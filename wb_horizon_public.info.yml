@@ -4,3 +4,5 @@ description: module pour wb-horizon et partenaire
 package: Custom
 core: 8.x
 core_version_requirement: ^8 || ^9
+dependencies:
+  - creation_site_virtuel:creation_site_virtuel
