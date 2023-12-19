@@ -1,14 +1,14 @@
 {
-    "name": "stephane888/wb_horizon_public",
-    "type": "drupal-module-custom",
-    "license": "MIT",
-    "description": "module wb_horizon_public",
-    "authors": [
-        {
-            "name": "kouwa stephane",
-            "email": "kksasteph888@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {}
+  "name": "stephane888/wb_horizon_public",
+  "type": "drupal-custom-module",
+  "license": "MIT",
+  "description": "module wb_horizon_public",
+  "authors": [
+    {
+      "name": "kouwa stephane",
+      "email": "kksasteph888@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {}
 }
