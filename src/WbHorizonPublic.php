@@ -17,6 +17,17 @@ use Drupal\node\Entity\Node;
 class WbHorizonPublic {
   
   /**
+   * Pour ce dernier on utilise pas de cache.
+   * On se fit au cache drupal, pour la premiere execution ensuite, on utilise
+   * la cache statique.
+   *
+   * @return array
+   */
+  static public function getCurrentUserId() {
+    return \Drupal::currentUser()->id();
+  }
+  
+  /**
    *
    * @param BlocksContents $BlocksContents
    */

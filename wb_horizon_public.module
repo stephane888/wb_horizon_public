@@ -7,6 +7,8 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\file\Entity\File;
 use Drupal\Core\File\FileSystemInterface;
 use Stephane888\Debug\Repositories\ConfigDrupal;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  *
@@ -319,6 +321,27 @@ function _wb_horizon_public_entityDuplicate(array $form, FormStateInterface $for
   $form_state->setRedirect("entity.commerce_product.edit_form", [
     'commerce_product' => $ProductClone->id()
   ]);
+}
+
+/**
+ * implement hook_entity_base_field_info
+ * ND: il faut executer "drush entup" pour que les champs soit MAJ dans la bd.
+ *
+ * @param EntityTypeInterface $entity_type
+ *
+ */
+function wb_horizon_public_entity_base_field_info(EntityTypeInterface $entity_type) {
+  $fields = [];
+  if ($entity_type->id() == 'paragraph') {
+    /**
+     * Afin de ressoudre le probleme d'identification du proprietaire d'un
+     * paragraphe, on ajoute un champs wbh_user_id.
+     */
+    $fields['wbh_user_id'] = BaseFieldDefinition::create('entity_reference')->setLabel(t(' Auteur (wbh)'))->setDescription(t('The user ID of author of the paragraph entity.'))->setDisplayOptions('form', [ //
+    ])->setRevisionable(TRUE)->setSetting('target_type', 'user')->setSetting('handler', 'default')->setDisplayOptions('view', [ //
+    ])->setDescription("Idealement on doit pouvoir identifier le paragraph à partir de l'entité parente.")->setDisplayConfigurable('form', true)->setDisplayConfigurable('view', TRUE)->setDefaultValueCallback('\Drupal\wb_horizon_public\WbHorizonPublic::getCurrentUserId');
+  }
+  return $fields;
 }
 
 
