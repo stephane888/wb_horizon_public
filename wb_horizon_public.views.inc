@@ -201,23 +201,41 @@ function wb_horizon_public_views_data_alter(array &$data) {
     ];
   }
   /**
-   * On ajoute le fitre wb_horizon_public_term_filter
+   * On ajoute les filtres dynamic ou un peu plus complexce.
    */
   foreach ($data as $table_name => $table_data) {
-    foreach ($table_data as $field_name => $field_data) {
-      // On se rassure que le fitre parent (more_fields_checkbox_list) est
-      // disponible.
-      if (!empty($field_data['filter']) && $field_data['filter']['id'] == 'more_fields_checkbox_list') {
-        if (!empty($data[$table_name][$field_name]['filter']['field'])) {
-          $mf = [
-            'title' => t('Custom filter term taxonomy with current domain'),
-            'group' => t('wb_horizon_public'),
-            'filter' => $data[$table_name][$field_name]['filter']
-          ];
-          $mf['filter']['id'] = 'wb_horizon_public_term_filter';
-          $data[$table_name]['wb_horizon_public_' . $data[$table_name][$field_name]['filter']['field']] = $mf;
+    if (str_contains($table_name, 'search_api_index_')) {
+      $data[$table_name]['wb_horizon_public_search_api_index'] = [
+        'title' => t('Current domain'),
+        'group' => t('Domain'),
+        'filter' => [
+          'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD, // valeur
+                                                                         // au
+                                                                         // niveau
+                                                                         // de
+                                                                         // table
+                                                                         // search_api_db_product_mode.
+          'id' => 'lesroidelareno_domain_filter',
+          'title' => t(' Available on current domain '),
+          'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+        ]
+      ];
+    }
+    else
+      foreach ($table_data as $field_name => $field_data) {
+        // On se rassure que le fitre parent (more_fields_checkbox_list) est
+        // disponible.
+        if (!empty($field_data['filter']) && $field_data['filter']['id'] == 'more_fields_checkbox_list') {
+          if (!empty($data[$table_name][$field_name]['filter']['field'])) {
+            $mf = [
+              'title' => t('Custom filter term taxonomy with current domain'),
+              'group' => t('wb_horizon_public'),
+              'filter' => $data[$table_name][$field_name]['filter']
+            ];
+            $mf['filter']['id'] = 'wb_horizon_public_term_filter';
+            $data[$table_name]['wb_horizon_public_' . $data[$table_name][$field_name]['filter']['field']] = $mf;
+          }
         }
       }
-    }
   }
 }

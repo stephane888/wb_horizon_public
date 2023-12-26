@@ -20,15 +20,14 @@ class lesroidelarenoDomainFilter extends DomainAccessCurrentAllFilter {
    * {@inheritdoc}
    */
   public function query() {
-    $this->ensureMyTable();
-    $real_field = $this->tableAlias . '.' . $this->realField;
-    /** @var \Drupal\domain\DomainNegotiatorInterface $domain_negotiator */
-    $domain_negotiator = \Drupal::service('domain.negotiator');
-    $current_domain = $domain_negotiator->getActiveDomain();
-    $current_domain_id = $current_domain->id();
-    //
     if (!empty($this->value)) {
-      $this->query->addWhere('OR', $real_field, $current_domain_id, '=');
+      $this->ensureMyTable();
+      $real_field = $this->tableAlias . '.' . $this->realField;
+      /** @var \Drupal\domain\DomainNegotiatorInterface $domain_negotiator */
+      $domain_negotiator = \Drupal::service('domain.negotiator');
+      $current_domain = $domain_negotiator->getActiveDomain();
+      $current_domain_id = $current_domain->id();
+      $this->query->addWhere('AND', $real_field, $current_domain_id, '=');
     }
   }
   
