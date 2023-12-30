@@ -201,10 +201,28 @@ function wb_horizon_public_views_data_alter(array &$data) {
     ];
   }
   /**
+   * On ajoute le filtre par domaine pour les promotions.
+   */
+  if (!empty($data['commerce_product_field_data'])) {
+    $data['commerce_product_field_data']['view_filter_promotion_product_promotion'] = [
+      'title' => t('Promotion/discount'),
+      'group' => t('Promotion by domain'),
+      'filter' => [
+        'field' => 'product_id',
+        'id' => 'view_filter_promotion_by_domain',
+        'title' => t('Product has promotion'),
+        'help' => t(' allows you to filter products that may have a valid promotion')
+      ]
+    ];
+  }
+  /**
    * On ajoute les filtres dynamic ou un peu plus complexce.
    */
   foreach ($data as $table_name => $table_data) {
     if (str_contains($table_name, 'search_api_index_')) {
+      /**
+       * On ajoute le filtre par domaine pour les produits.
+       */
       $data[$table_name]['wb_horizon_public_search_api_index'] = [
         'title' => t('Current domain'),
         'group' => t('Domain'),
@@ -218,6 +236,19 @@ function wb_horizon_public_views_data_alter(array &$data) {
           'id' => 'lesroidelareno_domain_filter',
           'title' => t(' Available on current domain '),
           'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+        ]
+      ];
+      /**
+       * On ajoute le filtre par domaine pour les promotions.
+       */
+      $data[$table_name]['wb_horizon_public_search_api_index'] = [
+        'title' => t('Promotion/discount'),
+        'group' => t('Promotion by domain'),
+        'filter' => [
+          'field' => 'product_id',
+          'id' => 'view_filter_promotionsearch_api_by_domain',
+          'title' => t('Product has promotion'),
+          'help' => t('Allows you to filter products that may have a valid promotion')
         ]
       ];
     }
