@@ -204,7 +204,7 @@ function wb_horizon_public_views_data_alter(array &$data) {
    * On ajoute le filtre par domaine pour les promotions.
    */
   if (!empty($data['commerce_product_field_data'])) {
-    $data['commerce_product_field_data']['view_filter_promotion_product_promotion'] = [
+    $data['commerce_product_field_data']['wb_horizon_public_product_promotion'] = [
       'title' => t('Promotion/discount'),
       'group' => t('Promotion by domain'),
       'filter' => [
@@ -241,7 +241,7 @@ function wb_horizon_public_views_data_alter(array &$data) {
       /**
        * On ajoute le filtre par domaine pour les promotions.
        */
-      $data[$table_name]['wb_horizon_public_search_api_index'] = [
+      $data[$table_name]['wb_horizon_public_promotion_search_api_index'] = [
         'title' => t('Promotion/discount'),
         'group' => t('Promotion by domain'),
         'filter' => [
