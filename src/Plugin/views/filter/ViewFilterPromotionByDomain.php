@@ -24,7 +24,10 @@ class ViewFilterPromotionByDomain extends ViewFilterPromotion {
       /** @var \Drupal\domain\DomainNegotiatorInterface $domain_negotiator */
       $domain_negotiator = \Drupal::service('domain.negotiator');
       $current_domain = $domain_negotiator->getActiveDomain();
-      $this->cacheACPu = $this->ApcuBackendFactory->get($current_domain . $this->pluginId);
+      if ($current_domain)
+        $this->cacheACPu = $this->ApcuBackendFactory->get($current_domain->id() . $this->pluginId);
+      else
+        $this->cacheACPu = $this->ApcuBackendFactory->get($this->pluginId);
     }
     return $this->cacheACPu;
   }
