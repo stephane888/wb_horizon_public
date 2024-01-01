@@ -29,6 +29,7 @@ class ViewFilterPromotionSearchApiByDomain extends ViewFilterPromotionSearchApi 
       else
         $this->cacheACPu = $this->ApcuBackendFactory->get($this->pluginId);
     }
+    // $this->cacheACPu->deleteAll();
     return $this->cacheACPu;
   }
   
