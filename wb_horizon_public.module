@@ -375,7 +375,13 @@ function wb_horizon_public_form_menu_form_alter(&$form, FormStateInterface $form
  *
  * @return number
  */
-function wb_horizon_public_form_menu_form_builder($entity_type, $type, &$form, FormStateInterface $form_state) {
+function wb_horizon_public_form_menu_form_builder($entity_type, Drupal\system\Entity\Menu $type, &$form, FormStateInterface $form_state) {
+  /**
+   * On supprime celui definit par lesroisdelareno.
+   * (cette ligne doit etre supprimer une foix la configuration MAJ).
+   */
+  $type->unsetThirdPartySetting('lesroidelareno', 'domain_id');
+  
   /**
    * On ajoute le champs doamin_id.
    */
