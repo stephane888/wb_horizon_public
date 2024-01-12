@@ -344,5 +344,46 @@ function wb_horizon_public_entity_base_field_info(EntityTypeInterface $entity_ty
   return $fields;
 }
 
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function wb_horizon_public_form_menu_form_alter(&$form, FormStateInterface $form_state) {
+  // Load the current node type configuration entity.
+  /**
+   *
+   * @var \Drupal\system\Entity\Menu $menu
+   */
+  $menu = $form_state->getFormObject()->getEntity();
+  /**
+   *
+   * @var \Drupal\domain_source\HttpKernel\DomainSourcePathProcessor $domain_source
+   */
+  $domain_source = \Drupal::service('domain_source.path_processor');
+  $domain = $domain_source->getActiveDomain();
+  if ($domain) {
+    $form['domain_id'] = [
+      '#type' => 'textfield',
+      '#title' => t('Domain Id'),
+      '#default_value' => $menu->getThirdPartySetting('wb_horizon_public', 'domain_id', $domain->id())
+    ];
+    $form['#entity_builders'][] = 'wb_horizon_public_form_menu_form_builder';
+  }
+}
+
+/**
+ * Ajoute des champs au niveau de la configuration.
+ *
+ * @return number
+ */
+function wb_horizon_public_form_menu_form_builder($entity_type, $type, &$form, FormStateInterface $form_state) {
+  /**
+   * On ajoute le champs doamin_id.
+   */
+  if (!empty($form_state->getValue('domain_id'))) {
+    $type->setThirdPartySetting('wb_horizon_public', 'domain_id', $form_state->getValue('domain_id'));
+    return $form_state->getValue('domain_id');
+  }
+  $type->unsetThirdPartySetting('wb_horizon_public', 'domain_id');
+}
 
 
