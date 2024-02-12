@@ -23,11 +23,13 @@ class CheckboxListWithDomain extends MoreFieldsCheckboxList {
   public function FilterCountEntitiesHasterm() {
     $queryEntity = parent::FilterCountEntitiesHasterm();
     // on va egalement filtrer en function du domaine encours.
-    /** @var \Drupal\domain\DomainNegotiatorInterface $domain_negotiator */
-    $domain_negotiator = \Drupal::service('domain.negotiator');
-    $current_domain = $domain_negotiator->getActiveDomain();
-    $queryEntity->condition(\Drupal\domain_access\DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD, $current_domain->id());
-    return $queryEntity;
+    if ($queryEntity) {
+      /** @var \Drupal\domain\DomainNegotiatorInterface $domain_negotiator */
+      $domain_negotiator = \Drupal::service('domain.negotiator');
+      $current_domain = $domain_negotiator->getActiveDomain();
+      $queryEntity->condition(\Drupal\domain_access\DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD, $current_domain->id());
+      return $queryEntity;
+    }
   }
   
   /**

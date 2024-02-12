@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @Block(
  *   id = "lesroidelareno_titre_de_la_page_encours",
- *   admin_label = @Translation("Titre de la page encours"),
+ *   admin_label = @Translation("Titre de la page encours (wbh)"),
  *   category = @Translation("Custom")
  * )
  */
