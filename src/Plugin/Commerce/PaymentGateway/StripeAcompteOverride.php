@@ -78,7 +78,7 @@ class StripeAcompteOverride extends StripeAcompte {
         else {
           $this->configuration['publishable_key'] = '';
           $this->configuration['secret_key'] = '';
-          $this->messenger()->addError("Paramettres de vente non configurer");
+          $this->messenger()->addError("Paramettres de vente non configurer ...");
         }
       }
     }

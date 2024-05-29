@@ -44,11 +44,11 @@ class stripeOverride extends Stripe {
         'entity.commerce_payment_gateway.edit_form'
       ];
       if (!in_array(\Drupal::routeMatch()->getRouteName(), $DirectAccessRoutes)) {
+        // On pourrait mettre en cache par domaine.
         if (!$this->commerce_payment_config) {
-          
           $datas = \Drupal::entityTypeManager()->getStorage("commerce_payment_config")->loadByProperties([
             'domain_id' => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
-            'payment_plugin_id' => 'paiement_acompte'
+            'payment_plugin_id' => 'stripe_cart_by_domain'
           ]);
           if ($datas)
             $this->commerce_payment_config = reset($datas);
@@ -62,7 +62,7 @@ class stripeOverride extends Stripe {
         else {
           $this->configuration['publishable_key'] = '';
           $this->configuration['secret_key'] = '';
-          $this->messenger()->addError("Paramettres de vente non configurer");
+          $this->messenger()->addError("Paramettres de vente non configurer..");
         }
       }
     }
