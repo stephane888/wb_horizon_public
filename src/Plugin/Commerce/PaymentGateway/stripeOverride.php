@@ -88,29 +88,16 @@ class stripeOverride extends Stripe {
     return $form;
   }
   
-  // /**
-  // * Initializes the SDK.
-  // */
-  // protected function init() {
-  // parent::init();
-  // $dd = [
-  // 'ApiKey' => StripeLibrary::getApiKey(),
-  // 'configuration' => $this->configuration
-  // ];
-  // \Stephane888\Debug\debugLog::kintDebugDrupal($dd, 'stripeOverride--init--',
-  // true);
-  // }
+  public function getPublishableKey() {
+    $this->updateConfigs();
+    return parent::getPublishableKey();
+  }
   
-  // /**
-  // *
-  // * {@inheritdoc}
-  // * @see
-  // \Drupal\commerce_stripe\Plugin\Commerce\PaymentGateway\Stripe::getPublishableKey()
-  // */
-  // public function getPublishableKey() {
-  // $this->updateConfigs();
-  // return parent::getPublishableKey();
-  // }
+  public function getSecretKey() {
+    $this->updateConfigs();
+    return parent::getSecretKey();
+  }
+  
 }
 
 
