@@ -78,6 +78,14 @@ class stripeOverride extends Stripe {
   }
   
   /**
+   * Initializes the SDK.
+   */
+  protected function init() {
+    $this->updateConfigs();
+    parent::init();
+  }
+  
+  /**
    *
    * {@inheritdoc}
    * @see \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\PaymentGatewayBase::buildConfigurationForm()
