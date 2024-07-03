@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Stephane888\Debug\Repositories\ConfigDrupal;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Http\RequestStack;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Url;
@@ -18,26 +18,26 @@ use Drupal\domain\DomainNegotiator;
  * Class DefaultConfigBydomain.
  */
 class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjectionInterface {
-  
+
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-  
+
   /**
    *
    * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
-  
+
   /**
    *
    * @var \Drupal\domain\DomainNegotiator
    */
   protected $DomainNegotiator;
-  
+
   /**
    * Constructs a \Drupal\system\ConfigFormBase object.
    *
@@ -50,7 +50,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
     $this->request = $RequestStack->getCurrentRequest();
     $this->DomainNegotiator = $DomainNegotiator;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -62,7 +62,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
     // return $instance;
     return new static($container->get('config.factory'), $container->get('entity_type.manager'), $container->get('request_stack'), $container->get('domain.negotiator'));
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -72,7 +72,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
       'wb_horizon_public.defaultconfigbydomain'
     ];
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -80,7 +80,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
   public function getFormId() {
     return 'default_config_bydomain';
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -101,7 +101,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
         return new RedirectResponse($url->toString());
       }
     }
-    
+
     $form['commerce'] = [
       '#type' => 'details',
       '#title' => 'Commerce configs',
@@ -131,7 +131,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
     ];
     return parent::buildForm($form, $form_state);
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -142,5 +142,4 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
     $config->set('commerce', $form_state->getValue('commerce'));
     $config->save();
   }
-  
 }
