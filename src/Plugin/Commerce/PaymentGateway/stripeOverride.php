@@ -101,6 +101,14 @@ class stripeOverride extends Stripe {
     return parent::getPublishableKey();
   }
   
+  /**
+   * Custom code
+   */
+  protected function getProviderKey() {
+    $this->updateConfigs();
+    return parent::getProviderKey();
+  }
+  
   public function getSecretKey() {
     $this->updateConfigs();
     return parent::getSecretKey();

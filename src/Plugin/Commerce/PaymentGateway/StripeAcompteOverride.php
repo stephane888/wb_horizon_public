@@ -52,6 +52,8 @@ class StripeAcompteOverride extends StripeAcompte {
    * On charge la valeur des access en function du domaine.
    */
   private function updateConfigs() {
+    // cette verification est importante, elle permet de faire fonctionner le
+    // module sur les sites exporter.
     if (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) {
       $DirectAccessRoutes = [
         'entity.commerce_payment_gateway.collection',
