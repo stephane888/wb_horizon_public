@@ -15,3 +15,38 @@ wb_horizon_public.default_config_bydomain:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+wb_horizon_public.booking_system.config.default:
+  path: '/admin/api/v1/booking-system/configure-default'
+  defaults:
+    _title: 'Configuration des creneaux'
+    _controller: '\Drupal\wb_horizon_public\Controller\WbHorizonPublicPluginController::ConfigureDefaultRDV'
+  requirements:
+    _role: 'gerant_de_site_web+administrator'
+ 
+wb_horizon_public.booking_system.app_load_config_calendar:
+  path: "/api/v1/booking-system/views-app-calendar"
+  defaults:
+    _title: "Load config calendar"
+    _controller: '\Drupal\wb_horizon_public\Controller\BookingSystemUseAppPublic::loadConfigCalandar'
+  requirements:
+    _permission: "access content"
+  methods: [GET,POST]
+
+wb_horizon_public.booking_system.app_load_creneaux:
+  path: "/api/v1/booking-system/views-app-creneaux/{booking_config_type_id}/{date}"
+  defaults:
+    _title: "Load configs creneaux"
+    _controller: '\Drupal\wb_horizon_public\Controller\BookingSystemUseAppPublic::loadConfisCreneaux'
+    date: null
+  requirements:
+    _permission: "access content"
+  methods: [GET,POST]
+
+wb_horizon_public.booking_system.save_reservation:
+  path: "/api/v1/booking-system/save-reservation/{booking_config_type_id}"
+  defaults:
+    _title: "Reservation"
+    _controller: '\Drupal\wb_horizon_public\Controller\BookingSystemUseAppPublic::SaveReservation'
+  requirements:
+    _permission: "access content"

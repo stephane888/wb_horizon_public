@@ -1,0 +1,4 @@
+services:
+  wb_horizon_public.source_manager:
+    class: Drupal\wb_horizon_public\Services\SourceManager
+    arguments: []

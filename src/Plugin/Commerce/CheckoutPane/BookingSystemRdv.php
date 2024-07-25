@@ -23,7 +23,7 @@ use Drupal\Core\Url;
  */
 class BookingSystemRdv extends CheckoutPaneBase implements CheckoutPaneInterface {
   protected static $default_id = 'wb_horizon_com';
-  
+
   /**
    * L'etape qui permet de selectionner le creneau.
    *
@@ -35,46 +35,38 @@ class BookingSystemRdv extends CheckoutPaneBase implements CheckoutPaneInterface
       '#tag' => 'div',
       '#value' => 'Veuillez selectionner une date et un creneau'
     ];
-    if (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) {
-      $booking_config_type_id = \Drupal\lesroidelareno\lesroidelareno::getCurrentPrefixDomain();
-      $entityConfig = \Drupal::entityTypeManager()->getStorage("booking_config_type")->load($booking_config_type_id);
-      if (!$booking_config_type_id || !$entityConfig) {
-        /**
-         * Pour la configuration par defaut.
-         */
-        $booking_config_type_id = self::$default_id;
-      }
-      
-      $urlCalendar = Url::fromRoute("lesroidelareno.booking_system.app_load_config_calendar");
-      $urlCreneaux = Url::fromRoute("lesroidelareno.booking_system.app_load_creneaux", [
-        'booking_config_type_id' => $booking_config_type_id,
-        'date' => null
-      ]);
-      $urlSave = Url::fromRoute("lesroidelareno.booking_system.save_reservation", [
-        'booking_config_type_id' => $booking_config_type_id
-      ]);
-      $pane_form['content_form'] = [
-        '#type' => 'html_tag',
-        '#tag' => 'section',
-        "#attributes" => [
-          'id' => 'app',
-          'data-url-calendar' => '/' . $urlCalendar->getInternalPath(),
-          'data-url-creneaux' => '/' . $urlCreneaux->getInternalPath(),
-          'data-url-save' => '/' . $urlSave->getInternalPath(),
-          'class' => [
-            'my-5'
-          ]
+    /**
+     * @var \Drupal\Core\Entity\EntityInterface $entityConfig
+     */
+    $entityConfig = \Drupal::service('wb_horizon_public.source_manager')->getEntityConfig();
+
+    $urlCalendar = Url::fromRoute("wb_horizon_public.booking_system.app_load_config_calendar");
+    $urlCreneaux = Url::fromRoute("wb_horizon_public.booking_system.app_load_creneaux", [
+      'booking_config_type_id' => $entityConfig->id(),
+      'date' => null
+    ]);
+    $urlSave = Url::fromRoute("wb_horizon_public.booking_system.save_reservation", [
+      'booking_config_type_id' => $entityConfig->id()
+    ]);
+    $pane_form['content_form'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'section',
+      "#attributes" => [
+        'id' => 'app',
+        'data-url-calendar' => '/' . $urlCalendar->getInternalPath(),
+        'data-url-creneaux' => '/' . $urlCreneaux->getInternalPath(),
+        'data-url-save' => '/' . $urlSave->getInternalPath(),
+        'class' => [
+          'my-5'
         ]
-      ];
-      $pane_form['content_form']['#attached']['library'][] = 'booking_system/booking_system_app2_checkout';
-    }
-    else {
-      // si on est pas sur wb-horizon.
-    }
+      ]
+    ];
+    $pane_form['content_form']['#attached']['library'][] = 'booking_system/booking_system_app2_checkout';
+
     // $this->checkoutFlow->submitForm($form, $form_state);
     return $pane_form;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -84,7 +76,7 @@ class BookingSystemRdv extends CheckoutPaneBase implements CheckoutPaneInterface
     $form = parent::buildConfigurationForm($form, $form_state);
     return $form;
   }
-  
+
   // On desactive cela, car le module ne le supporte pas pour l'instant.
   // public function buildPaneSummary() {
   // $summary = parent::buildPaneSummary();
@@ -99,5 +91,4 @@ class BookingSystemRdv extends CheckoutPaneBase implements CheckoutPaneInterface
     //
     parent::submitPaneForm($pane_form, $form_state, $complete_form);
   }
-  
 }
