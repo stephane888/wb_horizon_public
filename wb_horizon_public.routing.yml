@@ -50,3 +50,12 @@ wb_horizon_public.booking_system.save_reservation:
     _controller: '\Drupal\wb_horizon_public\Controller\BookingSystemUseAppPublic::SaveReservation'
   requirements:
     _permission: "access content"
+
+wb_horizon_public.webform_config:
+  path: "/admin/wb-horizon-public/webform-configs"
+  defaults:
+    _title: "Configuration des webforms"
+    _controller: '\Drupal\wb_horizon_public\Controller\WbHorizonPublicPluginController::configWebforms'
+  requirements:
+    _permission: "access content"
+    _role: "gerant_de_site_web+administrator"
