@@ -14,30 +14,194 @@ use Drupal\Core\Url;
  * resrvation de creneau ( application de base ).
  *
  * @author stephane
+ * @author vysti <ngahabanda@gmail.com>
  *        
  */
-class WbHorizonPublicPluginController extends ControllerBase
-{
+class WbHorizonPublicPluginController extends ControllerBase {
 	protected static $default_id = 'wb_horizon_com';
 
+	public function submissionsList(Request $request) {
+		$webforms = $this->getWebForms();
+		$filter = [
+			"#type" => "details",
+			"#title" => $this->t("Filter"),
+			'#open' => true,
+			"filter" => $this->formBuilder()->getForm("Drupal\wb_horizon_public\Form\SubmissionFilterForm", $webforms)
+		];
+		$render = [
+			"filter" => $filter,
+		];
 
-	public function configWebforms(Request $request)
-	{
-		if ($this->ownerAccess(\Drupal::currentUser())->isForbidden()) {
-			return $this->forbittenMessage();
-		}
-		$formStorage = $this->entityTypeManager()->getStorage("webform");
 
 		/**
-		 * @var  \Drupal\webform\Entity\Webform[] $webforms
+		 * Building table
 		 */
-		$webforms = (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) ?
+		$header = [
+			'sid' => $this->t('SID'),
+			'created' => $this->t('Created'),
+			'ip_address' => $this->t('Ip ddress'),
+			'web_form' => "Webform",
+			'submit_to' => $this->t('Submit to'),
+			'actions' => $this->t("Actions")
+		];
+
+
+
+		//*****************loading submission ids ************************** */
+		$query = \Drupal::database()->select("webform_submission", "submt");
+		$query->fields("submt", ["sid"]);
+		$or = $query->orConditionGroup();
+		if ($request->query->get("webform")) {
+			$webform_ids = $request->query->get("webform") ?  explode("--", $request->query->get("webform")) : [];
+			foreach ($webform_ids as $id) {
+				$or->condition("webform_id", $id);
+			}
+		} else {
+			foreach ($webforms as $id => $webform) {
+				$or->condition("webform_id", $webform->id());
+			}
+		}
+
+		$query->condition($or);
+		/**
+		 *
+		 * @var \Drupal\Core\Database\Query\PagerSelectExtender $pager
+		 */
+		$pager = $query->extend("Drupal\Core\Database\Query\PagerSelectExtender")->limit($request->query->get("limit") ?? 10);
+		$query_result = $pager->execute()->fetchAll();
+		$submission_ids = array_map(function ($element) {
+			return (int)$element->sid;
+		}, $query_result);
+
+		// ****************Loading webform submission ***************************//
+		/**
+		 * @var \Drupal\webform\Entity\WebformSubmission[]
+		 */
+		$submissions = $this->entityTypeManager()->getStorage("webform_submission")->loadMultiple($submission_ids);
+
+		/**
+		 * Building table rows 
+		 */
+		$rows = [];
+		foreach ($submissions as $id => $submission) {
+			$webform = $submission->getWebform();
+			$actions = [
+				'handle' => [
+					'title' => $this->t('Edit'),
+					'weight' => 0,
+					'url' => Url::fromRoute(
+						"entity.webform_submission.edit_form",
+						[
+							'webform' => $webform->id(),
+							'webform_submission' => $submission->id()
+						],
+						[
+							'query' => [
+								'destination' => $request->getPathInfo()
+							]
+						]
+					)
+				],
+				'duplicate' => [
+					'title' => $this->t('Duplicate'),
+					'weight' => 9,
+					'url' => Url::fromRoute(
+						"entity.webform_submission.duplicate_form",
+						[
+							'webform' => $webform->id(),
+							'webform_submission' => $submission->id()
+						],
+						[
+							'query' => [
+								'destination' => $request->getPathInfo()
+							]
+						]
+					)
+				],
+				'delete' => [
+					'title' => $this->t('Delete'),
+					'weight' => 10,
+					'url' => Url::fromRoute(
+						"entity.webform_submission.delete_form",
+						[
+							'webform' => $webform->id(),
+							'webform_submission' => $submission->id()
+						],
+						[
+							'query' => [
+								'destination' => $request->getPathInfo()
+							]
+						]
+					)
+				]
+			];
+			$rows[$id] = [
+				'sid' => $submission->id(),
+				'created' => $submission->getCreatedTime(),
+				'ip_address' => $submission->getRemoteAddr(),
+				'web_form' => [
+					"data" => [
+						[
+							'#type' => 'link',
+							'#title' => $webform->label(),
+							'#url' => $webform->toUrl(),
+						]
+					]
+				],
+				'submit_to' => $submission->getSourceEntity()->toLink(),
+				'actions' =>  [
+					"data" => [
+						"#type" => "operations",
+						"#links" => $actions
+					]
+				]
+			];
+			// dd($rows[$id]);
+		}
+		$render["table"] = [
+			'#type' => 'table',
+			'#header' => $header,
+			'#title' => $this->t("Submissions liste"),
+			'#rows' => $rows,
+			'#empty' => $this->t("No content found"),
+			'#attributes' => [
+				'class' => [
+					'page-content'
+				]
+			]
+		];
+		$render["pager"] = [
+			'#type' => "pager"
+		];
+		return $render;
+	}
+
+	/**
+	 * Provide the availables webforms
+	 * all the webforms if "lesroidelareno" is not  installed and only the webforms availale in the current domain if not
+	 * @return \Drupal\webform\Entity\Webform[]
+	 */
+	protected function getWebForms() {
+		$formStorage = $this->entityTypeManager()->getStorage("webform");
+
+		return (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) ?
 			$formStorage->loadByProperties(
 				[
 					"third_party_settings.webform_domain_access.field_domain_access" => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
 				]
 			) : $formStorage->loadMultiple();
-		// dd($webforms["contact_de2024Aug19476092"]->get("status"));
+	}
+
+
+	public function configWebforms(Request $request) {
+		if ($this->ownerAccess(\Drupal::currentUser())->isForbidden()) {
+			return $this->forbittenMessage();
+		}
+
+		/**
+		 * @var  \Drupal\webform\Entity\Webform[] $webforms
+		 */
+		$webforms = $this->getWebForms();
 		$header = [
 			'name' => $this->t('Name'),
 			'statut' => $this->t('Active'),
@@ -155,8 +319,7 @@ class WbHorizonPublicPluginController extends ControllerBase
 	/**
 	 * Permet de generer et de configurer RDV par domaine.
 	 */
-	public function ConfigureDefaultRDV()
-	{
+	public function ConfigureDefaultRDV() {
 		$entity_type_id = "booking_config_type";
 		$id = lesroidelareno::getCurrentPrefixDomain();
 		if (!$id) {
@@ -195,15 +358,13 @@ class WbHorizonPublicPluginController extends ControllerBase
 	 * @param array $context
 	 * @return array
 	 */
-	protected function forbittenMessage($message = "Access non authoriser", $context = [])
-	{
+	protected function forbittenMessage($message = "Access non authoriser", $context = []) {
 		$this->getLogger("wb_commerce")->critical($message, $context);
 		$this->messenger()->addError($message);
 		return [];
 	}
 
-	public function ownerAccess(AccountInterface $account)
-	{
+	public function ownerAccess(AccountInterface $account) {
 		if (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) {
 			if (\Drupal\lesroidelareno\lesroidelareno::FindUserAuthorDomain() || \Drupal\lesroidelareno\lesroidelareno::isAdministrator()) {
 				return AccessResult::allowed();

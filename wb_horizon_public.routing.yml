@@ -59,3 +59,12 @@ wb_horizon_public.webform_config:
   requirements:
     _permission: "access content"
     _role: "gerant_de_site_web+administrator"
+
+wb_horizon_public.webform_submission:
+  path: "/admin/wb-horizon-public/webform-submissions"
+  defaults:
+    _title: "Configuration des webforms"
+    _controller: '\Drupal\wb_horizon_public\Controller\WbHorizonPublicPluginController::submissionsList'
+  requirements:
+    _permission: "access content"
+    _role: "gerant_de_site_web+administrator"
