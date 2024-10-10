@@ -114,24 +114,6 @@ class stripeOverride extends Stripe {
     $this->updateConfigs();
     return parent::getSecretKey();
   }
-  
-  /**
-   *
-   * {@inheritdoc}
-   * @see \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\PaymentGatewayBase::getLabel()
-   */
-  public function getLabel() {
-    return $this->t($this->getLabel());
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   * @see \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\PaymentGatewayBase::getDisplayLabel()
-   */
-  public function getDisplayLabel() {
-    return $this->t($this->getDisplayLabel());
-  }
 }
 
 

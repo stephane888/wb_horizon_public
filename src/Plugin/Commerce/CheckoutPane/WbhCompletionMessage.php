@@ -101,7 +101,7 @@ class WbhCompletionMessage extends DefaultCompletionMessage {
           '#tag' => 'h3',
           '#type' => 'html_tag',
           '#attributes' => [],
-          '#value' => $title
+          '#value' => t($title)
         ],
         [
           '#type' => 'processed_text',
@@ -112,12 +112,11 @@ class WbhCompletionMessage extends DefaultCompletionMessage {
           '#tag' => 'small',
           '#type' => 'html_tag',
           '#attributes' => [],
-          '#value' => '(Svp, concultez egalement vos spams )'
+          '#value' => t('(Please also check your spam folder. )')
         ]
       ]
     ];
     
     return $pane_form;
   }
-  
 }
