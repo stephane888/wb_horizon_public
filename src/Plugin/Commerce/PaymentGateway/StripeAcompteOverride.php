@@ -13,7 +13,7 @@ use Drupal\stripebyhabeuk\Plugin\Commerce\PaymentGateway\StripeAcompte;
  * @CommercePaymentGateway(
  *   id = "stripeacompteoverride",
  *   label = "StripeHabeuk Acompte by lesroidelareno",
- *   display_label = "Payer l'acompte",
+ *   display_label = "Pay the deposit",
  *   forms = {
  *     "add-payment-method" = "Drupal\wb_horizon_public\PluginForm\Stripe\PaymentMethodAddAcompteOverride",
  *   },
@@ -61,10 +61,11 @@ class StripeAcompteOverride extends StripeAcompte {
       ];
       if (!$this->configIsUpdate && !in_array(\Drupal::routeMatch()->getRouteName(), $DirectAccessRoutes)) {
         if (!$this->commerce_payment_config) {
-          $datas = \Drupal::entityTypeManager()->getStorage("commerce_payment_config")->loadByProperties([
-            'domain_id' => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
-            'payment_plugin_id' => 'paiement_acompte'
-          ]);
+          $datas = \Drupal::entityTypeManager()->getStorage("commerce_payment_config")->loadByProperties(
+            [
+              'domain_id' => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
+              'payment_plugin_id' => 'paiement_acompte'
+            ]);
           if ($datas)
             $this->commerce_payment_config = reset($datas);
         }
@@ -110,4 +111,21 @@ class StripeAcompteOverride extends StripeAcompte {
     return parent::getSecretKey();
   }
   
+  /**
+   *
+   * {@inheritdoc}
+   * @see \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\PaymentGatewayBase::getLabel()
+   */
+  public function getLabel() {
+    return $this->t($this->getLabel());
+  }
+  
+  /**
+   *
+   * {@inheritdoc}
+   * @see \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\PaymentGatewayBase::getDisplayLabel()
+   */
+  public function getDisplayLabel() {
+    return $this->t($this->getDisplayLabel());
+  }
 }

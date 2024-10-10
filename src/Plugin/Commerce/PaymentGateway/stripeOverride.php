@@ -14,7 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
  * @CommercePaymentGateway(
  *   id = "lesroidelareno_stripe_override",
  *   label = "Stripe(default) by lesroidelareno",
- *   display_label = "Payer la totalité",
+ *   display_label = "Pay in full",
  *   forms = {
  *     "add-payment-method" = "Drupal\wb_horizon_public\PluginForm\Stripe\PaymentMethodAddFormOverride",
  *   },
@@ -46,10 +46,11 @@ class stripeOverride extends Stripe {
       if (!in_array(\Drupal::routeMatch()->getRouteName(), $DirectAccessRoutes)) {
         // On pourrait mettre en cache par domaine.
         if (!$this->commerce_payment_config) {
-          $datas = \Drupal::entityTypeManager()->getStorage("commerce_payment_config")->loadByProperties([
-            'domain_id' => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
-            'payment_plugin_id' => 'stripe_cart_by_domain'
-          ]);
+          $datas = \Drupal::entityTypeManager()->getStorage("commerce_payment_config")->loadByProperties(
+            [
+              'domain_id' => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
+              'payment_plugin_id' => 'stripe_cart_by_domain'
+            ]);
           if ($datas)
             $this->commerce_payment_config = reset($datas);
         }
@@ -114,6 +115,23 @@ class stripeOverride extends Stripe {
     return parent::getSecretKey();
   }
   
+  /**
+   *
+   * {@inheritdoc}
+   * @see \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\PaymentGatewayBase::getLabel()
+   */
+  public function getLabel() {
+    return $this->t($this->getLabel());
+  }
+  
+  /**
+   *
+   * {@inheritdoc}
+   * @see \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\PaymentGatewayBase::getDisplayLabel()
+   */
+  public function getDisplayLabel() {
+    return $this->t($this->getDisplayLabel());
+  }
 }
 
 
