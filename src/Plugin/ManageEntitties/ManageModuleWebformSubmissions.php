@@ -21,7 +21,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
  * )
  */
 class ManageModuleWebformSubmissions extends ManageEntittiesPluginBase {
-
+  
   /**
    *
    * {@inheritdoc}
@@ -30,23 +30,19 @@ class ManageModuleWebformSubmissions extends ManageEntittiesPluginBase {
   public function GetName() {
     return $this->configuration['name'];
   }
-
+  
   public function buildCollections(array &$datas) {
   }
-
+  
   /**
    *
    * {@inheritdoc}
    * @see \Drupal\manage_module_config\ManageEntitties\ManageEntittiesInterface::getBaseRoute()
    */
   public function getBaseRoute() {
-    return Url::fromRoute(
-      'wb_horizon_public.webform_submission',
-      [],
-      []
-    );
+    return Url::fromRoute('wb_horizon_public.webform_submission', [], []);
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -54,24 +50,27 @@ class ManageModuleWebformSubmissions extends ManageEntittiesPluginBase {
    */
   public function getNumbers() {
     $formStorage = \Drupal::entityTypeManager()->getStorage("webform");
-    $webforms = (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) ?
-      $formStorage->loadByProperties(
-        [
-          "third_party_settings.webform_domain_access.field_domain_access" => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
-        ]
-      ) : $formStorage->loadMultiple();
-    $query = \Drupal::database()->select("webform_submission", "submt");
-    $query->fields("submt", ["sid"]);
-    $or = $query->orConditionGroup();
-
-    foreach ($webforms as $id => $webform) {
-      $or->condition("webform_id", $webform->id());
+    $webforms = (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) ? $formStorage->loadByProperties(
+      [
+        "third_party_settings.webform_domain_access.field_domain_access" => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId()
+      ]) : $formStorage->loadMultiple();
+    if ($webforms) {
+      $query = \Drupal::database()->select("webform_submission", "submt");
+      $query->fields("submt", [
+        "sid"
+      ]);
+      $or = $query->orConditionGroup();
+      
+      foreach ($webforms as $id => $webform) {
+        $or->condition("webform_id", $webform->id());
+      }
+      
+      $query->condition($or);
+      return (int) $query->countQuery()->execute()->fetchField();
     }
-
-    $query->condition($or);
-    return (int) $query->countQuery()->execute()->fetchField();
+    return 0;
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -80,7 +79,7 @@ class ManageModuleWebformSubmissions extends ManageEntittiesPluginBase {
   public function getDescription() {
     return $this->configuration['description'];
   }
-
+  
   /**
    *
    * {@inheritdoc}
