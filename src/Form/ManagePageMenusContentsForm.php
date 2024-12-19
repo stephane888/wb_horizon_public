@@ -54,8 +54,8 @@ final class ManagePageMenusContentsForm extends FormBase {
       '#title' => $this->t('Select an action'),
       '#required' => TRUE,
       '#options' => [
-        'add_menu' => $this->t('Add a menu'),
-        'edit_menu' => $this->t('Edit an existing menu')
+        'add_menu' => $this->t('Add a menu')
+        // 'edit_menu' => $this->t('Edit an existing menu')
       ],
       '#ajax' => [
         'callback' => self::class . '::ReloadMenu',
@@ -107,9 +107,9 @@ final class ManagePageMenusContentsForm extends FormBase {
           '#required' => true,
           '#options' => [
             '' => $this->t('Select'),
-            'page_text' => 'Page de presentation text uniquement',
-            'page_text_image' => 'Page de presentation text et image',
-            'Page_custom' => 'Page personnaliser'
+            'page_text' => 'Page de presentation text uniquement'
+            // 'page_text_image' => 'Page de presentation text et image',
+            // 'Page_custom' => 'Page personnaliser'
           ],
           '#ajax' => [
             'callback' => self::class . '::ReloadMenu',
