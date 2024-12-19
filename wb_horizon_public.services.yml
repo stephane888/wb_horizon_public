@@ -2,3 +2,7 @@ services:
   wb_horizon_public.source_manager:
     class: Drupal\wb_horizon_public\Services\SourceManager
     arguments: []
+
+  wb_horizon_public.create_update_page:
+    class: Drupal\wb_horizon_public\Services\CreateUpdatePage
+    arguments: ['@entity_type.manager', '@config.storage', '@apivuejs.duplicate_reference']

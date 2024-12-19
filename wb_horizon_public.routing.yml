@@ -68,3 +68,12 @@ wb_horizon_public.webform_submission:
   requirements:
     _permission: "access content"
     _role: "gerant_de_site_web+administrator"
+
+wb_horizon_public.manage_page_menus_contents_form:
+  path: '/admin/wb-horizon-public/manage-page-menus-contents-form'
+  defaults:
+    _title: 'Manage Page Menus Contents'
+    _form: 'Drupal\wb_horizon_public\Form\ManagePageMenusContentsForm'
+  requirements:
+    _permission: 'access content'
+    _role: "gerant_de_site_web+administrator"
