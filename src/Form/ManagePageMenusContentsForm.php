@@ -136,12 +136,12 @@ final class ManagePageMenusContentsForm extends FormBase {
           '#options' => $this->getListCollections(),
           '#required' => true
         ];
-        $form['configure_view']['commerce_product'] = [
-          "#type" => "checkboxes",
-          '#title' => "Selectionner les types de produits",
-          '#description' => "Laissez vide pour pouvoir tout afficher",
-          '#options' => $this->getListProducts()
-        ];
+        // $form['configure_view']['commerce_product'] = [
+        // "#type" => "checkboxes",
+        // '#title' => "Selectionner les types de produits",
+        // '#description' => "Laissez vide pour pouvoir tout afficher",
+        // '#options' => $this->getListProducts()
+        // ];
       }
     }
   }
@@ -176,7 +176,7 @@ final class ManagePageMenusContentsForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $configs = $form_state->getValues();
-    $this->messenger()->addStatus($this->t('The message has been sent.'));
+    $this->messenger()->addStatus($this->t('Page create'));
     $values = [];
     $this->CreateUpdatePage->createUpdatePage($values, $configs);
   }

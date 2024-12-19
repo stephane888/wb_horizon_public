@@ -10,6 +10,7 @@ use Drupal\creation_site_virtuel\Entity\SiteTypeDatas;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\apivuejs\Services\DuplicateEntityReference;
 use Drupal\lesroidelareno\lesroidelareno;
+use Drupal\paragraphs\Entity\Paragraph;
 
 /**
  *
@@ -35,6 +36,26 @@ final class CreateUpdatePage {
       if ($configs['content_to_display'] == 'page') {
         if ($sections = $this->buildParagraphFromModel($configs['load_content'])) {
           $values['layout_paragraphs'] = $sections;
+        }
+      }
+      elseif ($configs['content_to_display'] == 'produit') {
+        $collections = array_filter($configs['configure_view']['collections'], function ($value) {
+          return $value ?? false;
+        });
+        $paragraphValues = [
+          'wbh_user_id' => $uid,
+          'parent_type' => 'site_internet_entity',
+          'parent_field_name' => 'layout_paragraphs'
+        ];
+        $Paragraph = $this->buildParagraphForProducts($paragraphValues);
+        $values['layout_paragraphs'][] = [
+          'target_id' => $Paragraph->id()
+        ];
+        $values['hbk_collection'] = [];
+        foreach ($collections as $id) {
+          $values['hbk_collection'][] = [
+            'target_id' => $id
+          ];
         }
       }
     }
@@ -71,6 +92,17 @@ final class CreateUpdatePage {
     $entity = MenuLinkContent::create($values);
     $entity->save();
     return $entity;
+  }
+  
+  protected function buildParagraphForProducts(array $values) {
+    $values = $values + [
+      'type' => 'produits_vetements',
+      \Drupal\domain_access\DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
+      \Drupal\domain_source\DomainSourceElementManagerInterface::DOMAIN_SOURCE_FIELD => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId()
+    ];
+    $Paragraph = Paragraph::create($values);
+    $Paragraph->save();
+    return $Paragraph;
   }
   
   /**
