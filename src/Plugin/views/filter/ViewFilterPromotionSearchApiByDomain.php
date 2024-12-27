@@ -20,17 +20,20 @@ class ViewFilterPromotionSearchApiByDomain extends ViewFilterPromotionSearchApi 
    * @return \Drupal\Core\Cache\ApcuBackend
    */
   protected function getCacheACPu() {
-    if (!$this->cacheACPu) {
+    if (!$this->cacheDatas) {
+      $id = $this->pluginId;
       /** @var \Drupal\domain\DomainNegotiatorInterface $domain_negotiator */
       $domain_negotiator = \Drupal::service('domain.negotiator');
       $current_domain = $domain_negotiator->getActiveDomain();
       if ($current_domain)
-        $this->cacheACPu = $this->ApcuBackendFactory->get($current_domain->id() . $this->pluginId);
-      else
-        $this->cacheACPu = $this->ApcuBackendFactory->get($this->pluginId);
+        $id = $current_domain->id() . $this->pluginId;
+      if (function_exists('apcu_cache_info')) {
+        $this->cacheDatas = $this->ApcuBackendFactory->get($id);
+      }
+      else {
+        $this->cacheDatas = $this->DatabaseBackendFactory->get($id);
+      }
     }
-    // $this->cacheACPu->deleteAll();
-    return $this->cacheACPu;
+    return $this->cacheDatas;
   }
-  
 }
