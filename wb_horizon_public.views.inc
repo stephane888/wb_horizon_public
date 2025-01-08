@@ -71,6 +71,21 @@ function wb_horizon_public_views_data_alter(array &$data) {
       ]
     ];
   }
+  /**
+   * On ajoute le filtre pour le 'hbk_collection__field_domain_access'.
+   */
+  if (!empty($data['hbk_collection__field_domain_access'])) {
+    $data['hbk_collection__field_domain_access']['hbk_collection_field_domain_access'] = [
+      'title' => t('Current domain'),
+      'group' => t('Domain'),
+      'filter' => [
+        'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD . '_target_id',
+        'id' => 'lesroidelareno_domain_filter',
+        'title' => t(' Available on current domain '),
+        'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
+      ]
+    ];
+  }
   
   /**
    * On ajoute le filtre pour cv_entity.
@@ -227,12 +242,7 @@ function wb_horizon_public_views_data_alter(array &$data) {
         'title' => t('Current domain'),
         'group' => t('Domain'),
         'filter' => [
-          'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD, // valeur
-                                                                         // au
-                                                                         // niveau
-                                                                         // de
-                                                                         // table
-                                                                         // search_api_db_product_mode.
+          'field' => DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD,
           'id' => 'lesroidelareno_domain_filter',
           'title' => t(' Available on current domain '),
           'help' => t(' Filters out nodes available on current domain ( published to current domain or all affiliates ). ')
