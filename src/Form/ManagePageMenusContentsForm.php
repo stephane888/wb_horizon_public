@@ -132,16 +132,34 @@ final class ManagePageMenusContentsForm extends FormBase {
         // On peut ajouter des filtres supplementaire comme l'ordre de trie.
         $form['configure_view']['collections'] = [
           "#type" => "checkboxes",
-          '#title' => "Selectionner les collections",
+          '#title' => $this->t("Select collections"),
           '#options' => $this->getListCollections(),
-          '#required' => true
+          '#required' => true,
+          '#descritpion' => $this->t('Allows you to manage the display of products')
         ];
-        // $form['configure_view']['commerce_product'] = [
-        // "#type" => "checkboxes",
-        // '#title' => "Selectionner les types de produits",
-        // '#description' => "Laissez vide pour pouvoir tout afficher",
-        // '#options' => $this->getListProducts()
-        // ];
+        $form['configure_view']['field_products'] = [
+          '#type' => 'select2',
+          '#title' => $this->t('Select products'),
+          '#options' => [],
+          '#autocomplete' => TRUE,
+          '#target_type' => 'commerce_product',
+          '#selection_handler' => 'default',
+          '#multiple' => TRUE,
+          '#description' => $this->t('Select the products that will be used when generating the model'),
+          '#selection_settings' => [
+            // 'target_bundles' => [
+            // 'chapeau' => 'chapeau'
+            // ],
+            'sort' => [
+              'field' => 'title',
+              'direction' => 'ASC'
+            ]
+          ],
+          '#select2' => [
+            'minimumInputLength' => 2,
+            'placeholder' => t('Enter the name of a product')
+          ]
+        ];
       }
     }
   }
@@ -156,7 +174,12 @@ final class ManagePageMenusContentsForm extends FormBase {
     return $entities;
   }
   
-  protected function getListProducts() {
+  /**
+   * Charge les types de produits.
+   *
+   * @return string[]|\Drupal\Core\StringTranslation\TranslatableMarkup[]|NULL[]
+   */
+  protected function getListProductsType() {
     $entities = [];
     foreach (\Drupal::entityTypeManager()->getStorage("commerce_product_type")->loadMultiple() as $key => $product_type) {
       if ($product_type->get('status')) {
@@ -175,9 +198,14 @@ final class ManagePageMenusContentsForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $configs = $form_state->getValues();
+    $form_values = $form_state->getValues();
     $this->messenger()->addStatus($this->t('Page create'));
+    /**
+     * Donées provenant de l'entite, utile lors de la MAJ.
+     *
+     * @var array $values
+     */
     $values = [];
-    $this->CreateUpdatePage->createUpdatePage($values, $configs);
+    $this->CreateUpdatePage->createUpdatePage($values, $form_values);
   }
 }

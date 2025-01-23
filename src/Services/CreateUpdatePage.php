@@ -13,8 +13,7 @@ use Drupal\lesroidelareno\lesroidelareno;
 use Drupal\paragraphs\Entity\Paragraph;
 
 /**
- *
- * @todo Add class description.
+ * PErmet de creer une page et un menu.
  */
 final class CreateUpdatePage {
   
@@ -42,12 +41,17 @@ final class CreateUpdatePage {
         $collections = array_filter($configs['configure_view']['collections'], function ($value) {
           return $value ?? false;
         });
+        
+        $field_products = [];
+        if (!empty($configs['configure_view']['field_products'])) {
+          $field_products = $configs['configure_view']['field_products'];
+        }
         $paragraphValues = [
           'wbh_user_id' => $uid,
           'parent_type' => 'site_internet_entity',
           'parent_field_name' => 'layout_paragraphs'
         ];
-        $Paragraph = $this->buildParagraphForProducts($paragraphValues);
+        $Paragraph = $this->buildParagraphForProducts($paragraphValues, $field_products);
         $values['layout_paragraphs'][] = [
           'target_id' => $Paragraph->id()
         ];
@@ -94,12 +98,16 @@ final class CreateUpdatePage {
     return $entity;
   }
   
-  protected function buildParagraphForProducts(array $values) {
+  protected function buildParagraphForProducts(array $values, array $field_products = []) {
     $values = $values + [
       'type' => 'produits_vetements',
       \Drupal\domain_access\DomainAccessManagerInterface::DOMAIN_ACCESS_FIELD => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId(),
       \Drupal\domain_source\DomainSourceElementManagerInterface::DOMAIN_SOURCE_FIELD => \Drupal\lesroidelareno\lesroidelareno::getCurrentDomainId()
     ];
+    // On ajoute les produits principalement pour la duplication.
+    if ($field_products) {
+      $values['field_products'] = $field_products;
+    }
     $Paragraph = Paragraph::create($values);
     $Paragraph->save();
     return $Paragraph;
