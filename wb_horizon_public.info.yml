@@ -5,3 +5,7 @@ package: Custom
 core_version_requirement: ^9 || ^10
 dependencies:
   - creation_site_virtuel:creation_site_virtuel
+  - booking_system:booking_system
+  - commerce_checkout:commerce_checkout
+  - commerce_shipping:commerce_shipping
+  - paragraphs:paragraphs

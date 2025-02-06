@@ -182,5 +182,4 @@ class WbHorizonPublic {
       ];
     return $link;
   }
-  
 }
