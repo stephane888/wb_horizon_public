@@ -18,26 +18,26 @@ use Drupal\domain\DomainNegotiator;
  * Class DefaultConfigBydomain.
  */
 class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjectionInterface {
-
+  
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-
+  
   /**
    *
    * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
-
+  
   /**
    *
    * @var \Drupal\domain\DomainNegotiator
    */
   protected $DomainNegotiator;
-
+  
   /**
    * Constructs a \Drupal\system\ConfigFormBase object.
    *
@@ -50,7 +50,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
     $this->request = $RequestStack->getCurrentRequest();
     $this->DomainNegotiator = $DomainNegotiator;
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -62,7 +62,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
     // return $instance;
     return new static($container->get('config.factory'), $container->get('entity_type.manager'), $container->get('request_stack'), $container->get('domain.negotiator'));
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -72,7 +72,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
       'wb_horizon_public.defaultconfigbydomain'
     ];
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -80,7 +80,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
   public function getFormId() {
     return 'default_config_bydomain';
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -101,7 +101,27 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
         return new RedirectResponse($url->toString());
       }
     }
-
+    elseif ($domain->id() !== $query) {
+      /**
+       *
+       * @var \Drupal\domain\Entity\Domain $domain2
+       */
+      $domain2 = $this->entityTypeManager->getStorage('domain')->load($query);
+      // On redirige sur le domaine definie dans la variable, car on ne peut pas
+      // afficher ou editer une valeur à partir d'une autre domaine.
+      if ($domain2) {
+        $url = Url::fromRoute("wb_horizon_public.default_config_bydomain", [], [
+          'query' => [
+            'domain_config_ui_domain' => $domain2->id(),
+            'domain_config_ui_language' => ''
+          ],
+          'absolute' => false
+        ]);
+        $url_string = $domain2->getScheme() . $domain2->getHostname() . $url->toString();
+        return new RedirectResponse($url_string);
+      }
+    }
+    
     $form['commerce'] = [
       '#type' => 'details',
       '#title' => 'Commerce configs',
@@ -131,7 +151,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
     ];
     return parent::buildForm($form, $form_state);
   }
-
+  
   /**
    *
    * {@inheritdoc}
