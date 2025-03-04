@@ -1,5 +1,4 @@
 <?php
-
 use Drupal\Core\Field\FormatterInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -21,6 +20,25 @@ use Drupal\file\FileInterface;
  * This file is no longer required in Drupal 8.
  * @see https://www.drupal.org/node/2217931
  */
+function wb_horizon_public_theme($existing, $type, $theme, $path) {
+  return [
+    'wb_horizon_public_list_user_wbf' => [
+      'variables' => [
+        'forms' => [],
+        'attributes' => NULL
+      ],
+      'template' => 'wb-horizon-public-list-user-wbf'
+    ],
+    'wb_horizon_public_edit_webform' => [
+      'variables' => [
+        'form' => [],
+        'attributes' => NULL
+      ],
+      'template' => 'wb-horizon-public-edit-webform'
+    ]
+  ];
+}
+
 /**
  *
  * @param array $form
@@ -188,9 +206,9 @@ function wb_horizon_public_field_config_insert(FieldConfig $FieldConfig) {
   }
   //
   // if ($entity->get('field_type') == 'image') {
-
+  
   // $entityConf = $entity->toArray();
-
+  
   // /**
   // * Recuperer l'image qui est definit dans
   // * third_party_settings.wb_horizon_public.default_image_data et le definit
@@ -214,7 +232,7 @@ function wb_horizon_public_field_config_insert(FieldConfig $FieldConfig) {
   // //
   // // Compose the default icon file destination.
   // $icon_meta = stream_get_meta_data($icon_data);
-
+  
   // // File extension from MIME, only JPG/JPEG, PNG and SVG expected.
   // [
   // $l,
@@ -226,13 +244,13 @@ function wb_horizon_public_field_config_insert(FieldConfig $FieldConfig) {
   // }
   // if (empty($icon_file_ext))
   // $icon_file_ext = 'png';
-
+  
   // $filesystem = \Drupal::service('file_system');
   // $icon_upload_path = 'public://paragraphs_type_icon_import/';
   // $id = $entity->get('entity_type') . '_' . $entity->get('field_name') .
   // rand(0, 999);
   // $icon_file_destination = $icon_upload_path . $id . '.' . $icon_file_ext;
-
+  
   // $filesystem->prepareDirectory($icon_upload_path,
   // FileSystemInterface::CREATE_DIRECTORY |
   // FileSystemInterface::MODIFY_PERMISSIONS);
@@ -277,7 +295,8 @@ function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields,
       'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::getRouteToedit',
       'weight' => 10
     ];
-  } elseif ($context['entity_type'] == 'blocks_contents') {
+  }
+  elseif ($context['entity_type'] == 'blocks_contents') {
     $fields['id'] = [
       'type' => 'field',
       'label' => t('ID'),
@@ -294,7 +313,8 @@ function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields,
       'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::manageBlocksContents',
       'weight' => 10
     ];
-  } elseif ($context['entity_type'] == 'commerce_product') {
+  }
+  elseif ($context['entity_type'] == 'commerce_product') {
     $fields['product_id'] = [
       'type' => 'field',
       'label' => t('ID'),
@@ -306,7 +326,8 @@ function wb_horizon_public_inline_entity_form_table_fields_alter(array &$fields,
       'callback' => '\Drupal\wb_horizon_public\WbHorizonPublic::getRouteVariations',
       'weight' => 10
     ];
-  } elseif ($context['entity_type'] == 'node') {
+  }
+  elseif ($context['entity_type'] == 'node') {
     $fields['nid'] = [
       'type' => 'field',
       'label' => t('ID'),
@@ -363,7 +384,7 @@ function _wb_horizon_public_entityDuplicate(array $form, FormStateInterface $for
    */
   $Product = $form_state->getFormObject()->getEntity();
   $ProductClone = $Product->createDuplicate();
-
+  
   /**
    *
    * @var \Drupal\vuejs_entity\Services\DuplicateEntityReference $DuplicateEntityReference
@@ -391,9 +412,11 @@ function wb_horizon_public_entity_base_field_info(EntityTypeInterface $entity_ty
      * Afin de ressoudre le probleme d'identification du proprietaire d'un
      * paragraphe, on ajoute un champs wbh_user_id.
      */
-    $fields['wbh_user_id'] = BaseFieldDefinition::create('entity_reference')->setLabel(t(' Auteur (wbh)'))->setDescription(t('The user ID of author of the paragraph entity.'))->setDisplayOptions('form', [ //
-    ])->setRevisionable(TRUE)->setSetting('target_type', 'user')->setSetting('handler', 'default')->setDisplayOptions('view', [ //
-    ])->setDescription("Idealement on doit pouvoir identifier le paragraph à partir de l'entité parente.")->setDisplayConfigurable('form', true)->setDisplayConfigurable('view', TRUE)->setDefaultValueCallback('\Drupal\wb_horizon_public\WbHorizonPublic::getCurrentUserId');
+    $fields['wbh_user_id'] = BaseFieldDefinition::create('entity_reference')->setLabel(t(' Auteur (wbh)'))->setDescription(t('The user ID of author of the paragraph entity.'))->setDisplayOptions(
+      'form', [ //
+      ])->setRevisionable(TRUE)->setSetting('target_type', 'user')->setSetting('handler', 'default')->setDisplayOptions('view', [ //
+    ])->setDescription("Idealement on doit pouvoir identifier le paragraph à partir de l'entité parente.")->setDisplayConfigurable('form', true)->setDisplayConfigurable('view', TRUE)->setDefaultValueCallback(
+      '\Drupal\wb_horizon_public\WbHorizonPublic::getCurrentUserId');
   }
   return $fields;
 }
@@ -435,7 +458,7 @@ function wb_horizon_public_form_menu_form_builder($entity_type, Drupal\system\En
    * (cette ligne doit etre supprimer une foix la configuration MAJ).
    */
   $type->unsetThirdPartySetting('lesroidelareno', 'domain_id');
-
+  
   /**
    * On ajoute le champs doamin_id.
    */

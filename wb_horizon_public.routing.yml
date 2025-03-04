@@ -77,3 +77,19 @@ wb_horizon_public.manage_page_menus_contents_form:
   requirements:
     _permission: 'access content'
     _role: "gerant_de_site_web+administrator"
+
+wb_horizon_public.list_user_wbf:
+  path: '/user/forms'
+  defaults:
+    _title: 'List User Wbf'
+    _controller: '\Drupal\wb_horizon_public\Controller\ListUserWbfController'
+  requirements:
+    _permission: 'access content'
+
+wb_horizon_public.edit_webform:
+  path: '/wb-horizon-public/edit-webform/{webform_id}'
+  defaults:
+    _title: 'Edit Webform'
+    _controller: '\Drupal\wb_horizon_public\Controller\EditWebformController'
+  requirements:
+    _permission: 'access content'

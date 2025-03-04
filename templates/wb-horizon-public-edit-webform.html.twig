@@ -1,0 +1,7 @@
+<div {{attributes}}> 
+	<h1 class="title">{{form.title}}</h1>
+	{% if form.description %}
+		<div class="description alert bg-body-secondary px-4 fst-italic"> {{form.description|raw}} </div>
+	{% endif %}
+	<div class="content-form"> {{form.webform}} </div> 
+ </div>

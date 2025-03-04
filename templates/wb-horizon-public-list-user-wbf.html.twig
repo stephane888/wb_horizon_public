@@ -1,0 +1,13 @@
+<div class="container user-webform">
+	<div class="row">
+	{% for form in forms %}
+		<div class="col-md-3 mb-5">
+			<div class="bg-">
+				<h3 class="h4 fw-bold"> {{ form.title }} </h3>		
+				<div>{{ form.description|raw }}  </div>
+				<a class="btn btn-primary" href="{{form.url}}"> Plus de details </a>
+			</div>
+		</div>
+	{% endfor %}
+	</div>
+</div>
