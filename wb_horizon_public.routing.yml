@@ -93,3 +93,12 @@ wb_horizon_public.edit_webform:
     _controller: '\Drupal\wb_horizon_public\Controller\EditWebformController'
   requirements:
     _permission: 'access content'
+
+wb_horizon_public.edit_webform_by_submission_id:
+  path: '/wb-horizon-public/edit-webform-submission/{webform_id}/{submission_id}'
+  defaults:
+    _title: 'Edit Webform submission'
+    _controller: '\Drupal\wb_horizon_public\Controller\EditWebformController::editWebform'
+  requirements:
+    _permission: 'access content'
+

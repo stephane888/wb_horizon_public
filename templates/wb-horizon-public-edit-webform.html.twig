@@ -1,7 +1,39 @@
 <div {{attributes}}> 
 	<h1 class="title">{{form.title}}</h1>
 	{% if form.description %}
-		<div class="description alert bg-body-secondary px-4 fst-italic"> {{form.description|raw}} </div>
+		<div class="description-form alert bg-body-secondary px-4 fst-italic"> {{form.description|raw}} </div>
 	{% endif %}
+	
+		<div class="add_submision d-flex justify-content-between mb-5 ">
+			<div>
+				<ol class="nav breadcrumb">
+					<li> <a href="/">Accueil</a> </li> <li class="px-2"> > </li> <li> <a href="/user/forms">Liste des formulaires</a> <li>
+				</ol>
+			</div>
+			{% if form.add_submision %}
+			<a href="{{form.add_submision.url}}" class="text-black">Ajouter un element 
+				<svg class="svg-icon-plus" style="width: 4rem; height: 4rem;vertical-align: middle; overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M810.666667 554.666667H554.666667v256h-85.333334V554.666667H213.333333v-85.333334h256V213.333333h85.333334v256h256v85.333334z"  /></svg>
+			</a>
+			{% endif %}
+		</div>
+	
+	<div class="sousmissions">
+		 {% for sousmision in form.sousmisions %}
+        	<div class="sousmission">
+        		<svg width="2rem" height="2rem" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" class="svg-1">
+<path d="M10 11H3C2.72 11 2.5 10.78 2.5 10.5V3.5C2.5 3.22 2.72 3 3 3H10C10.28 3 10.5 3.22 10.5 3.5V10.5C10.5 10.78 10.28 11 10 11Z" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 11H14C13.72 11 13.5 10.78 13.5 10.5V3.5C13.5 3.22 13.72 3 14 3H21C21.28 3 21.5 3.22 21.5 3.5V10.5C21.5 10.78 21.28 11 21 11Z" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 22H14C13.72 22 13.5 21.78 13.5 21.5V14.5C13.5 14.22 13.72 14 14 14H21C21.28 14 21.5 14.22 21.5 14.5V21.5C21.5 21.78 21.28 22 21 22Z" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 22H3C2.72 22 2.5 21.78 2.5 21.5V14.5C2.5 14.22 2.72 14 3 14H10C10.28 14 10.5 14.22 10.5 14.5V21.5C10.5 21.78 10.28 22 10 22Z" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+        		<a href="{{sousmision.url}}" class="titre">
+        			{{sousmision.titre}}
+        		</a>
+        		<a href="{{sousmision.url}}">
+        		<svg fill="#000000" width="3rem" height="3rem" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M 25 4.03125 C 24.234375 4.03125 23.484375 4.328125 22.90625 4.90625 L 13 14.78125 L 12.78125 15 L 12.71875 15.3125 L 12.03125 18.8125 L 11.71875 20.28125 L 13.1875 19.96875 L 16.6875 19.28125 L 17 19.21875 L 17.21875 19 L 27.09375 9.09375 C 28.246094 7.941406 28.246094 6.058594 27.09375 4.90625 C 26.515625 4.328125 25.765625 4.03125 25 4.03125 Z M 25 5.96875 C 25.234375 5.96875 25.464844 6.089844 25.6875 6.3125 C 26.132813 6.757813 26.132813 7.242188 25.6875 7.6875 L 16 17.375 L 14.28125 17.71875 L 14.625 16 L 24.3125 6.3125 C 24.535156 6.089844 24.765625 5.96875 25 5.96875 Z M 4 8 L 4 28 L 24 28 L 24 14.8125 L 22 16.8125 L 22 26 L 6 26 L 6 10 L 15.1875 10 L 17.1875 8 Z"/></svg>
+        		</a>
+        	</div>
+    	{% endfor %}
+	</div>
 	<div class="content-form"> {{form.webform}} </div> 
  </div>
