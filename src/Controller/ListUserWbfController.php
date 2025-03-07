@@ -20,12 +20,22 @@ final class ListUserWbfController extends ControllerBase {
     $form_ids = ConfigDrupal::config("manage_module_config.webformsusers");
     if (!empty($form_ids['webforms_users']))
       foreach ($form_ids['webforms_users'] as $webform_id) {
+        /**
+         *
+         * @var \Drupal\webform\Entity\Webform $webform
+         */
         $webform = $this->entityTypeManager()->getStorage('webform')->load($webform_id);
         if ($webform) {
+          /**
+           *
+           * @var \Drupal\webform\WebformSubmissionStorage $submission_storage
+           */
+          $submission_storage = \Drupal::entityTypeManager()->getStorage('webform_submission');
           $view_builder = $this->entityTypeManager()->getViewBuilder('webform');
           $form['webform'] = $view_builder->view($webform);
           $form['title'] = $webform->label();
           $form['description'] = $webform->getDescription();
+          $form['number'] = $submission_storage->getTotal($webform);
           $form['url'] = Url::fromRoute('wb_horizon_public.edit_webform', [
             'webform_id' => $webform_id
           ])->toString();
