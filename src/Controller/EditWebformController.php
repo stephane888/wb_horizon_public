@@ -12,6 +12,12 @@ use Drupal\Core\Controller\ControllerBase;
 final class EditWebformController extends ControllerBase {
   
   /**
+   *
+   * @var \Drupal\webform\Entity\Webform
+   */
+  protected $domain;
+  
+  /**
    * Permet de mofifier un formulaire webform.
    */
   public function __invoke($webform_id) {
@@ -34,6 +40,16 @@ final class EditWebformController extends ControllerBase {
       }
       $view_builder = $this->entityTypeManager()->getViewBuilder('webform');
       $form['webform'] = $view_builder->view($webform);
+      //
+      if (!empty($form['webform']['elements']['domain'])) {
+        $form['webform']['elements']['domain']['#default_value'] = $this->getCurrentDomain();
+        $form['webform']['elements']['domain']['#value'] = $this->getCurrentDomain();
+        $form['webform']['elements']['domain']['#access'] = false;
+      }
+      else {
+        $this->messenger()->addError("Le champs domaine est requis");
+        return [];
+      }
       $form['title'] = $webform->label();
       $form['description'] = $webform->getDescription();
       //
@@ -52,6 +68,12 @@ final class EditWebformController extends ControllerBase {
     return [];
   }
   
+  /**
+   *
+   * @param [] $webform_id
+   * @param [] $submission_id
+   * @return []
+   */
   public function editWebform($webform_id, $submission_id) {
     /**
      *
@@ -73,13 +95,32 @@ final class EditWebformController extends ControllerBase {
         ])->toString()
       ];
       $submissionData = \Drupal\webform\Entity\WebformSubmission::load($submission_id);
-      //
-      // $view_builder = $this->entityTypeManager()->getViewBuilder('webform');
+      // On verifie que l'utilisateur a le droit d'acceder à la soumission.
+      $datas = $submissionData->getData();
+      if (!(!empty($datas['domain']) && $datas['domain'] == $this->getCurrentDomain()->id())) {
+        $this->messenger()->addError("Vous n'avais pas le droit d'acceder à ce contenu");
+        // return [];
+      }
+      // $view_builder =
+      // $this->entityTypeManager()->getViewBuilder('webform');
       // $form['webform'] = $view_builder->view($webform);
       $form['title'] = $webform->label();
       $form['description'] = $webform->getDescription();
       //
+      
       $form['webform'] = \Drupal::service('entity.form_builder')->getForm($submissionData, 'edit');
+      //
+      if (!empty($form['webform']['elements']['domain'])) {
+        // dump($form['webform']['elements']);
+        // $form['webform']['elements']['domain']['#default_value'] =
+        // $this->getCurrentDomain();
+        $form['webform']['elements']['domain']['#value'] = $this->getCurrentDomain()->label();
+        // $form['webform']['elements']['domain']['#access'] = false;
+      }
+      else {
+        $this->messenger()->addError("Le champs domaine est requis");
+        return [];
+      }
       return [
         '#theme' => 'wb_horizon_public_edit_webform',
         '#form' => $form,
@@ -95,11 +136,34 @@ final class EditWebformController extends ControllerBase {
     return [];
   }
   
+  /**
+   *
+   * @return \Drupal\domain\Entity\Domain
+   */
+  protected function getCurrentDomain() {
+    if (!$this->domain) {
+      /**
+       *
+       * @var \Drupal\domain_source\HttpKernel\DomainSourcePathProcessor $domain_source
+       */
+      $domain_source = \Drupal::service('domain_source.path_processor');
+      $this->domain = $domain_source->getActiveDomain();
+    }
+    return $this->domain;
+  }
+  
+  /**
+   *
+   * @param integer $webform_id
+   * @return string[][]|\Drupal\Core\GeneratedUrl[][]
+   */
   protected function loadSubmissions($webform_id) {
     $sousmisions = [];
     $query = \Drupal::entityQuery('webform_submission')->accessCheck(FALSE)->condition('webform_id', $webform_id);
     $query->condition('uid', \Drupal::currentUser()->id());
+    // $query->condition('domain', $this->getCurrentDomain()->id());
     $query->sort('changed', 'DESC');
+    
     $result = $query->execute();
     foreach ($result as $item) {
       $submission = \Drupal\webform\Entity\WebformSubmission::load($item);

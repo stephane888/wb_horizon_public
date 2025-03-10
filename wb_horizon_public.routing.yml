@@ -85,6 +85,7 @@ wb_horizon_public.list_user_wbf:
     _controller: '\Drupal\wb_horizon_public\Controller\ListUserWbfController'
   requirements:
     _permission: 'access content'
+    _role: "gerant_de_site_web+administrator"
 
 wb_horizon_public.edit_webform:
   path: '/wb-horizon-public/edit-webform/{webform_id}'
@@ -93,6 +94,7 @@ wb_horizon_public.edit_webform:
     _controller: '\Drupal\wb_horizon_public\Controller\EditWebformController'
   requirements:
     _permission: 'access content'
+    _role: "gerant_de_site_web+administrator"
 
 wb_horizon_public.edit_webform_by_submission_id:
   path: '/wb-horizon-public/edit-webform-submission/{webform_id}/{submission_id}'
@@ -101,4 +103,5 @@ wb_horizon_public.edit_webform_by_submission_id:
     _controller: '\Drupal\wb_horizon_public\Controller\EditWebformController::editWebform'
   requirements:
     _permission: 'access content'
+    _role: "gerant_de_site_web+administrator"
 

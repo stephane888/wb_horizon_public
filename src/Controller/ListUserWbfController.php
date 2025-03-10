@@ -42,7 +42,6 @@ final class ListUserWbfController extends ControllerBase {
           $forms[] = $form;
         }
       }
-    
     return [
       '#theme' => 'wb_horizon_public_list_user_wbf',
       '#forms' => $forms
