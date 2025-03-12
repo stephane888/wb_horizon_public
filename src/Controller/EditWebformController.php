@@ -53,6 +53,8 @@ final class EditWebformController extends ControllerBase {
       $form['title'] = $webform->label();
       $form['description'] = $webform->getDescription();
       //
+      $form['webform']['#attached']['library'][] = 'wb_horizon_public/style';
+      //
       return [
         '#theme' => 'wb_horizon_public_edit_webform',
         '#form' => $form,
@@ -159,27 +161,45 @@ final class EditWebformController extends ControllerBase {
    */
   protected function loadSubmissions($webform_id) {
     $sousmisions = [];
-    $query = \Drupal::entityQuery('webform_submission')->accessCheck(FALSE)->condition('webform_id', $webform_id);
-    $query->condition('uid', \Drupal::currentUser()->id());
-    // $query->condition('domain', $this->getCurrentDomain()->id());
-    $query->sort('changed', 'DESC');
+    /**
+     *
+     * @var \Drupal\Core\Database\Connection $connexion
+     */
+    $connexion = \Drupal::database();
+    $query = $connexion->select('webform_submission', 'ws');
+    $query->fields("ws", [
+      'sid'
+    ]);
+    $query->addJoin('INNER', 'webform_submission_data', 'wsd', 'ws.sid=wsd.sid');
+    $query->condition('wsd.name', 'domain');
+    $query->condition('ws.webform_id', $webform_id);
+    $result = $query->execute()->fetchAll(\PDO::FETCH_ASSOC);
     
-    $result = $query->execute();
-    foreach ($result as $item) {
-      $submission = \Drupal\webform\Entity\WebformSubmission::load($item);
-      $data = $submission->getData();
-      $titre = 'Libelle';
-      if (!empty($data['titre']))
-        $titre = $data['titre'];
-      //
-      $sousmisions[] = [
-        'titre' => $titre,
-        'url' => Url::fromRoute('wb_horizon_public.edit_webform_by_submission_id', [
-          'webform_id' => $webform_id,
-          'submission_id' => $submission->id()
-        ])->toString()
-      ];
-    }
+    //
+    // $query =
+    // \Drupal::entityQuery('webform_submission')->accessCheck(FALSE)->condition('webform_id',
+    // $webform_id);
+    // $query->condition('uid', \Drupal::currentUser()->id());
+    // // $query->condition('data.domain', $this->getCurrentDomain()->id());
+    // $query->sort('changed', 'DESC');
+    
+    // $result = $query->execute();
+    if ($result)
+      foreach ($result as $item) {
+        $submission = \Drupal\webform\Entity\WebformSubmission::load($item['sid']);
+        $data = $submission->getData();
+        $titre = 'Libelle';
+        if (!empty($data['titre']))
+          $titre = $data['titre'];
+        //
+        $sousmisions[] = [
+          'titre' => $titre,
+          'url' => Url::fromRoute('wb_horizon_public.edit_webform_by_submission_id', [
+            'webform_id' => $webform_id,
+            'submission_id' => $submission->id()
+          ])->toString()
+        ];
+      }
     return $sousmisions;
   }
 }

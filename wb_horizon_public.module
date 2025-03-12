@@ -39,6 +39,13 @@ function wb_horizon_public_theme($existing, $type, $theme, $path) {
   ];
 }
 
+function wb_horizon_public_preprocess_html(&$variables) {
+  $curentRoute = \Drupal::routeMatch()->getRouteName();
+  if ($curentRoute == 'wb_horizon_public.list_user_wbf') {
+    $variables['attributes']['class'][] = 'webform_id';
+  }
+}
+
 /**
  *
  * @param array $form
