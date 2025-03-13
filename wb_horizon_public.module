@@ -47,6 +47,21 @@ function wb_horizon_public_preprocess_html(&$variables) {
 }
 
 /**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function wb_horizon_public_menu_links_discovered_alter(&$links) {
+  // Ajoute un élément de menu au menu "Account".
+  $links['wb_horizon_public.list_user_wbf'] = [
+    'title' => t('Manage content'),
+    'description' => 'Ceci est un lien personnalisé ajouté via un module.',
+    'url' => 'internal:/user/forms',
+    'menu_name' => 'account',
+    'parent' => '', //
+    'weight' => 10 //
+  ];
+}
+
+/**
  *
  * @param array $form
  * @param \Drupal\Core\Form\FormStateInterface $form_state

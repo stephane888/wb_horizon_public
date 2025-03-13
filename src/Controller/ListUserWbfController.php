@@ -12,6 +12,11 @@ use Drupal\manage_module_config\ManageModuleConfig;
  * Returns responses for wb-horizon public routes.
  */
 final class ListUserWbfController extends ControllerBase {
+  /**
+   *
+   * @var \Drupal\webform\Entity\Webform
+   */
+  protected $domain;
   
   /**
    * Builds the response.
@@ -29,16 +34,11 @@ final class ListUserWbfController extends ControllerBase {
            */
           $webform = $this->entityTypeManager()->getStorage('webform')->load($webform_id);
           if ($webform) {
-            /**
-             *
-             * @var \Drupal\webform\WebformSubmissionStorage $submission_storage
-             */
-            $submission_storage = \Drupal::entityTypeManager()->getStorage('webform_submission');
             $view_builder = $this->entityTypeManager()->getViewBuilder('webform');
             $form['webform'] = $view_builder->view($webform);
             $form['title'] = $webform->label();
             $form['description'] = $webform->getDescription();
-            $form['number'] = $submission_storage->getTotal($webform);
+            $form['number'] = $this->countSubmissions($webform_id);
             $form['url'] = Url::fromRoute('wb_horizon_public.edit_webform', [
               'webform_id' => $webform_id
             ])->toString();
@@ -57,5 +57,43 @@ final class ListUserWbfController extends ControllerBase {
         ]
       ]
     ];
+  }
+  
+  /**
+   *
+   * @param integer $webform_id
+   * @return string[][]|\Drupal\Core\GeneratedUrl[][]
+   */
+  protected function countSubmissions($webform_id) {
+    /**
+     *
+     * @var \Drupal\Core\Database\Connection $connexion
+     */
+    $connexion = \Drupal::database();
+    $query = $connexion->select('webform_submission', 'ws');
+    $query->fields("ws", [
+      'sid'
+    ]);
+    $query->addJoin('INNER', 'webform_submission_data', 'wsd', 'ws.sid=wsd.sid');
+    $query->condition('wsd.name', 'domain');
+    $query->condition('wsd.value', $this->getCurrentDomain()->id());
+    $query->condition('ws.webform_id', $webform_id);
+    return $query->countQuery()->execute()->fetchField();
+  }
+  
+  /**
+   *
+   * @return \Drupal\domain\Entity\Domain
+   */
+  protected function getCurrentDomain() {
+    if (!$this->domain) {
+      /**
+       *
+       * @var \Drupal\domain_source\HttpKernel\DomainSourcePathProcessor $domain_source
+       */
+      $domain_source = \Drupal::service('domain_source.path_processor');
+      $this->domain = $domain_source->getActiveDomain();
+    }
+    return $this->domain;
   }
 }

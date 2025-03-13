@@ -42,9 +42,12 @@ final class EditWebformController extends ControllerBase {
       $form['webform'] = $view_builder->view($webform);
       //
       if (!empty($form['webform']['elements']['domain'])) {
-        $form['webform']['elements']['domain']['#default_value'] = $this->getCurrentDomain();
-        $form['webform']['elements']['domain']['#value'] = $this->getCurrentDomain();
-        $form['webform']['elements']['domain']['#access'] = false;
+        // test1186.wb-horizon.kksa (test1186_wb_horizon_kksa)
+        $key = $this->getCurrentDomain()->label() . ' (' . $this->getCurrentDomain()->id() . ')';
+        $form['webform']['elements']['domain']['#default_value'] = $key;
+        $form['webform']['elements']['domain']['#value'] = $key;
+        // $form['webform']['elements']['domain']['#access'] = false;
+        $form['webform']['elements']['domain']['#wrapper_attributes']['class'][] = 'd-none';
       }
       else {
         $this->messenger()->addError("Le champs domaine est requis");
@@ -172,10 +175,10 @@ final class EditWebformController extends ControllerBase {
     ]);
     $query->addJoin('INNER', 'webform_submission_data', 'wsd', 'ws.sid=wsd.sid');
     $query->condition('wsd.name', 'domain');
+    $query->condition('wsd.value', $this->getCurrentDomain()->id());
     $query->condition('ws.webform_id', $webform_id);
     $result = $query->execute()->fetchAll(\PDO::FETCH_ASSOC);
     
-    //
     // $query =
     // \Drupal::entityQuery('webform_submission')->accessCheck(FALSE)->condition('webform_id',
     // $webform_id);
