@@ -10,5 +10,7 @@
     }
   ],
   "minimum-stability": "dev",
-  "require": {}
+  "require": {
+  	"drupal/recaptcha": "3.4.0"
+  }
 }
