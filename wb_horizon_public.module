@@ -103,6 +103,16 @@ function wb_horizon_public_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
       }
     }
   }
+  // on ajoute la securité via les webforms.
+  elseif (!empty($form['#webform_id'])) {
+    // Ajout de reCAPTCHA (version spécifique si nécessaire)
+    $form['captcha'] = [
+      '#type' => 'captcha',
+      '#captcha_type' => 'recaptcha/reCAPTCHA', // Type spécifique
+      '#recaptcha_version' => 2, // Optionnel (v2 ou v3)
+      '#recaptcha_action' => 'submit' // Pour v3
+    ];
+  }
 }
 
 /**
