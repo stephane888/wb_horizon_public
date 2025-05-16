@@ -104,7 +104,7 @@ function wb_horizon_public_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
     }
   }
   // on ajoute la securité via les webforms.
-  elseif (!empty($form['#webform_id'])) {
+  elseif (!empty($form['#webform_id']) && !\Drupal::currentUser()->id()) {
     // Ajout de reCAPTCHA (version spécifique si nécessaire)
     $form['captcha'] = [
       '#type' => 'captcha',
