@@ -500,3 +500,15 @@ function wb_horizon_public_form_menu_form_builder($entity_type, Drupal\system\En
   }
   $type->unsetThirdPartySetting('wb_horizon_public', 'domain_id');
 }
+
+/**
+ * Ajoute des champs au niveau de la configuration.
+ */
+function wb_horizon_public_preprocess_file_link(&$variables) {
+  // if ($file->getMimeType() == 'application/pdf' &&
+  // !empty($variables['link'])) {
+  if (!empty($variables['link'])) {
+    $variables['link']['#options']['attributes']['target'] = '_blank';
+    $variables['link']['#options']['attributes']['rel'] = 'noopener noreferrer';
+  }
+}
