@@ -103,15 +103,46 @@ function wb_horizon_public_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
       }
     }
   }
-  // on ajoute la securité via les webforms.
+  // On ajoute la securité via les webforms.
   elseif (!empty($form['#webform_id']) && !\Drupal::currentUser()->id()) {
-    // Ajout de reCAPTCHA (version spécifique si nécessaire)
-    $form['captcha'] = [
+    $captcha = [
       '#type' => 'captcha',
       '#captcha_type' => 'recaptcha/reCAPTCHA', // Type spécifique
       '#recaptcha_version' => 2, // Optionnel (v2 ou v3)
-      '#recaptcha_action' => 'submit' // Pour v3
+      '#recaptcha_action' => 'submit',
+      '#weight' => 8
     ];
+    $captcha['#validate'][] = 'wb_horizon_public_validate_recaptcha';
+    if (!empty($form['elements'])) {
+      $form['elements']['actions']['#weight'] = 10;
+      $form['elements']['captcha'] = $captcha;
+    }
+    else {
+      $form['actions']['#weight'] = 10;
+      $form['captcha'] = $captcha;
+    }
+  }
+}
+
+/**
+ * Validation personnalisée pour reCAPTCHA.
+ */
+function wb_horizon_public_validate_recaptcha(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $recaptcha_response = $form_state->getValue('g-recaptcha-response');
+  
+  if (empty($recaptcha_response)) {
+    $form_state->setErrorByName('captcha', t('Veuillez cocher la case reCAPTCHA pour prouver que vous n\'êtes pas un robot.'));
+    \Drupal::messenger()->addError(t('Veuillez cocher la case reCAPTCHA pour prouver que vous n\'êtes pas un robot.'));
+    // Ajout d'un message dans la zone dédiée
+    // $form['recaptcha_messages']['#markup'] = '<div
+    // id="recaptcha-error-messages" class="recaptcha-error-messages messages
+    // messages--error">' . t(
+    // 'Veuillez cocher la case reCAPTCHA pour prouver que vous n\'êtes pas un
+    // robot.') . '</div>';
+    // \Stephane888\Debug\debugLog::symfonyDebug($form, 'form', true);
+    // \Stephane888\Debug\debugLog::symfonyDebug($form_state, 'form_state',
+    // true);
+    // dump($form, $form_state);
   }
 }
 
