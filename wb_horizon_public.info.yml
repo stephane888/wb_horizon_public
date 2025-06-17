@@ -10,3 +10,4 @@ dependencies:
   - commerce_shipping:commerce_shipping
   - paragraphs:paragraphs
   - recaptcha:recaptcha
+  - recaptcha_v3:recaptcha_v3

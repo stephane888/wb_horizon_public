@@ -103,8 +103,8 @@ function wb_horizon_public_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
       }
     }
   }
-  // On ajoute la securité via les webforms.
-  elseif (!empty($form['#webform_id']) && !\Drupal::currentUser()->id()) {
+  // permet de deplacer le captha.
+  elseif (!empty($form['#webform_id00']) && \Drupal::currentUser()->id() && \Drupal::currentUser()->id() == 1) {
     $captcha = [
       '#type' => 'captcha',
       '#captcha_type' => 'recaptcha/reCAPTCHA', // Type spécifique
@@ -121,6 +121,92 @@ function wb_horizon_public_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
       $form['actions']['#weight'] = 10;
       $form['captcha'] = $captcha;
     }
+  }
+  // On ajoute la securité via les webforms.
+  elseif (!empty($form['#webform_id00']) && !\Drupal::currentUser()->id()) {
+    $captcha = [
+      '#type' => 'captcha',
+      '#captcha_type' => 'recaptcha/reCAPTCHA', // Type spécifique
+      '#recaptcha_version' => 2, // Optionnel (v2 ou v3)
+      '#recaptcha_action' => 'submit',
+      '#weight' => 8
+    ];
+    $captcha['#validate'][] = 'wb_horizon_public_validate_recaptcha';
+    if (!empty($form['elements'])) {
+      $form['elements']['actions']['#weight'] = 10;
+      $form['elements']['captcha'] = $captcha;
+    }
+    else {
+      $form['actions']['#weight'] = 10;
+      $form['captcha'] = $captcha;
+    }
+  /**
+   *
+   * @var \Drupal\Core\Form\FormState $form_state
+   */
+    // $db = [
+    // 'errors' => $form_state->getErrors(),
+    // 'hasAnyErrors' => $form_state->hasAnyErrors()
+    // ];
+    // \Stephane888\Debug\debugLog::kintDebugDrupal($db, $form['#webform_id'] .
+    // '---', true);
+  }
+}
+
+function wb_horizon_public_webform_submission_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+/**
+ *
+ * @var \Drupal\Core\Form\FormState $form_state
+ */
+  // \Stephane888\Debug\debugLog::symfonyDebug($form,
+  // 'webform_submission_form_alter', true);
+  // Vérifier s'il y a des erreurs
+  // if ($form_state->hasAnyErrors() || $form_state->getErrors()) {
+  // // Parcourir tous les éléments du formulaire
+  // foreach ($form['elements'] as &$element) {
+  // if (!is_array($element) || !isset($element['#webform_key'])) {
+  // continue;
+  // }
+  
+  // // Vérifier si cet élément a une erreur
+  // if ($form_state->hasAnyErrors() && $form_state->getError($element)) {
+  // // Ajouter la classe is-invalid
+  // if (!isset($element['#attributes'])) {
+  // $element['#attributes'] = [];
+  // }
+  // $element['#attributes']['class'][] = 'is-invalid border border-danger
+  // border-2';
+  
+  // // Déplacer le message d'erreur sous le champ
+  // $error_message = [
+  // '#type' => 'webform_message',
+  // '#message_message' => $form_state->getError($element),
+  // '#message_type' => 'error',
+  // '#attributes' => [
+  // 'class' => [
+  // 'invalid-feedback'
+  // ]
+  // ]
+  // ];
+  
+  // // Ajouter le message après l'élément
+  // $element['#suffix'] = (isset($element['#suffix']) ? $element['#suffix'] :
+  // '');
+  // $element['#suffix'] .=
+  // \Drupal::service('renderer')->render($error_message);
+  // }
+  // }
+  // }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for webform elements.
+ */
+function wb_horizon_public_preprocess_webform_element(&$variables) {
+  $element = $variables['element'];
+  // Ajouter la classe is-invalid si le champ a des erreurs
+  if (isset($element['#errors']) && !empty($element['#errors'])) {
+    $variables['attributes']['class'][] = 'is-invalid border border-danger border-2';
   }
 }
 

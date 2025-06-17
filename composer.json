@@ -11,6 +11,7 @@
   ],
   "minimum-stability": "dev",
   "require": {
-  	"drupal/recaptcha": "3.4.0"
+  	"drupal/recaptcha": "3.4.0",
+  	"drupal/recaptcha_v3": "2.0.4"
   }
 }
