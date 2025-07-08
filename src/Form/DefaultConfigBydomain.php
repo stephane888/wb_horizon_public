@@ -88,8 +88,8 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
   public function buildForm(array $form, FormStateInterface $form_state) {
     $configs = ConfigDrupal::config('wb_horizon_public.defaultconfigbydomain');
     $query = $this->request->query->get('domain_config_ui_domain');
+    $domain = $this->DomainNegotiator->getActiveDomain();
     if (empty($query)) {
-      $domain = $this->DomainNegotiator->getActiveDomain();
       if ($domain) {
         $url = Url::fromRoute("wb_horizon_public.default_config_bydomain", [], [
           'query' => [
@@ -101,7 +101,7 @@ class DefaultConfigBydomain extends ConfigFormBase implements ContainerInjection
         return new RedirectResponse($url->toString());
       }
     }
-    elseif ($domain->id() !== $query) {
+    elseif ($domain && $domain->id() !== $query) {
       /**
        *
        * @var \Drupal\domain\Entity\Domain $domain2
