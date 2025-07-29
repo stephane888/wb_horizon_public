@@ -72,7 +72,7 @@ class stripeOverride extends Stripe {
   /**
    * Re-initializes the SDK after the plugin is unserialized.
    */
-  public function __wakeup() {
+  public function __wakeup(): void {
     $this->updateConfigs();
     parent::__wakeup();
     $this->init();

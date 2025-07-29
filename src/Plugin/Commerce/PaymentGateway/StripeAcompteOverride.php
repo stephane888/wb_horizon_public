@@ -42,7 +42,7 @@ class StripeAcompteOverride extends StripeAcompte {
   /**
    * Re-initializes the SDK after the plugin is unserialized.
    */
-  public function __wakeup() {
+  public function __wakeup(): void {
     parent::__wakeup();
     // new approche.
     $this->updateConfigs();
