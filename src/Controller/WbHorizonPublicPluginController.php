@@ -195,9 +195,9 @@ class WbHorizonPublicPluginController extends ControllerBase {
   }
   
   public function configWebforms(Request $request) {
-    if ($this->ownerAccess(\Drupal::currentUser())->isForbidden()) {
-      return $this->forbittenMessage();
-    }
+    // if ($this->ownerAccess(\Drupal::currentUser())->isForbidden()) {
+    // return $this->forbittenMessage();
+    // }
     
     /**
      *
@@ -211,23 +211,24 @@ class WbHorizonPublicPluginController extends ControllerBase {
     ];
     
     $datas['action_buttons'] = [
-      "#type" => "container",
-      "add_method" => [
-        '#type' => 'link',
-        '#title' => $this->t("Add a webform"),
-        '#url' => Url::fromRoute('entity.webform.add_form', [], [
-          'query' => [
-            'destination' => $request->getPathInfo()
-          ]
-        ]),
-        '#attributes' => [
-          "class" => [
-            "button",
-            "button--primary",
-            "button--action"
-          ]
-        ]
-      ]
+      "#type" => "container"
+      // pas besoin d'un bouton ajouter.
+      // "add_method" => [
+      // '#type' => 'link',
+      // '#title' => $this->t("Add a webform"),
+      // '#url' => Url::fromRoute('entity.webform.add_form', [], [
+      // 'query' => [
+      // 'destination' => $request->getPathInfo()
+      // ]
+      // ]),
+      // '#attributes' => [
+      // "class" => [
+      // "button",
+      // "button--primary",
+      // "button--action"
+      // ]
+      // ]
+      // ]
     ];
     
     $rows = [];
@@ -355,6 +356,13 @@ class WbHorizonPublicPluginController extends ControllerBase {
     return [];
   }
   
+  /**
+   *
+   * @deprecated : les regles d'acces sont definit directement dans le module
+   *             lesroidelareno.
+   * @param AccountInterface $account
+   * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden
+   */
   public function ownerAccess(AccountInterface $account) {
     if (\Drupal::moduleHandler()->moduleExists('lesroidelareno')) {
       if (\Drupal\lesroidelareno\lesroidelareno::FindUserAuthorDomain() || \Drupal\lesroidelareno\lesroidelareno::isAdministrator()) {
