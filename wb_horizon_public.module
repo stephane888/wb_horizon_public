@@ -152,25 +152,30 @@ function wb_horizon_public_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
     // '---', true);
   }
   elseif (!empty($form['#webform_id'])) {
-    // 1. Identifier votre action (doit exister dans l'admin)
-    $action_id = 'validation_des_webforms'; // Doit correspondre à une action
-                                            // créée dans
-                                            // l'interface admin
-                                            
-    // 2. Ajouter le champ CAPTCHA
-    $captcha = [
-      '#type' => 'captcha',
-      '#captcha_type' => 'recaptcha_v3/' . $action_id
-    ];
-    
-    // 3. Placement dans le formulaire
-    if (!empty($form['elements'])) {
-      $form['elements']['actions']['#weight'] = 10;
-      $form['elements']['captcha'] = $captcha;
-    }
-    else {
-      $form['actions']['#weight'] = 10;
-      $form['captcha'] = $captcha;
+
+    if (!\Drupal::currentUser()->isAuthenticated()) {//Pour l'instant on n'affiche le recaptcha qu'aux utilisateurs non connectés
+      // 1. Identifier votre action (doit exister dans l'admin)
+      // User is connected; you can add custom logic or modification here.
+      // For instance, you might want to omit the CAPTCHA for authenticated users.
+      $action_id = 'validation_des_webforms'; // Doit correspondre à une action
+        // créée dans
+        // l'interface admin
+        
+        // 2. Ajouter le champ CAPTCHA
+      $captcha = [
+        '#type' => 'captcha',
+        '#captcha_type' => 'recaptcha_v3/' . $action_id
+      ];
+      
+      // 3. Placement dans le formulaire
+      if (!empty($form['elements'])) {
+        $form['elements']['actions']['#weight'] = 10;
+        $form['elements']['captcha'] = $captcha;
+      }
+      else {
+        $form['actions']['#weight'] = 10;
+        $form['captcha'] = $captcha;
+      }
     }
   }
 }
